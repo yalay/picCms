@@ -1,0 +1,71 @@
+hash: 58036e4bd101ca065968501d457d6d190ce67dbe3bc9efb04be86929f315b678
+updated: 2017-05-21T10:32:06.5619214+08:00
+imports:
+- name: github.com/asaskevich/govalidator
+  version: 948702997351133e1cc5a1b5842313ca46deeb0d
+- name: github.com/astaxie/beego
+  version: cab8458c1c4a5a3b4bf5192922be620e6dede15b
+  subpackages:
+  - config
+  - context
+  - context/param
+  - grace
+  - logs
+  - session
+  - toolbox
+  - utils
+- name: github.com/go-sql-driver/mysql
+  version: 382e13d099fcf5f5994290892ab258fbebbdc5e3
+- name: github.com/gosimple/slug
+  version: dfb5bc66af5ea2fadd6bd1a02ea9eca9bc25f14f
+- name: github.com/jinzhu/gorm
+  version: 9acaa33324bbcc78239a1c913d4f1292c12177b9
+  subpackages:
+  - dialects/mysql
+- name: github.com/jinzhu/inflection
+  version: 1c35d901db3da928c72a72d8458480cc9ade058f
+- name: github.com/jinzhu/now
+  version: d939ba741945c047cac69c329c5fb0d6b4a06520
+- name: github.com/microcosm-cc/bluemonday
+  version: e79763773ab6222ca1d5a7cbd9d62d83c1f77081
+- name: github.com/qor/admin
+  version: cffface9bdd535d26fdb8f7d91887a3758a99e87
+- name: github.com/qor/qor
+  version: 73c8973008613bbae5004fc4b8155ec3f60d9ca5
+  subpackages:
+  - resource
+  - utils
+- name: github.com/qor/responder
+  version: 2d882089748afcf4e729334d7bb7fa17057de2e9
+- name: github.com/qor/roles
+  version: 42ce8672fbd63afcca681b32712a03ca3ae53623
+- name: github.com/qor/validations
+  version: 33b58b9d1651affa63034555341ea989b78cb8f9
+- name: github.com/rainycape/unidecode
+  version: cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c
+- name: github.com/theplant/cldr
+  version: b0e164c0af5b3f027430b6b861d999076a6c67ad
+- name: golang.org/x/net
+  version: f315505cf3349909cdf013ea56690da34e96a451
+  repo: https://github.com/golang/net.git
+  subpackages:
+  - html
+  - html/atom
+testImports:
+- name: github.com/gopherjs/gopherjs
+  version: 6997325cc76f13635f68ad9e1c38544966eb7de2
+  subpackages:
+  - js
+- name: github.com/jtolds/gls
+  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
+- name: github.com/smartystreets/assertions
+  version: f8459f92181409546d2762c9e9c4bedc23c92d76
+  subpackages:
+  - internal/go-render/render
+  - internal/oglematchers
+- name: github.com/smartystreets/goconvey
+  version: d4c757aa9afd1e2fc1832aaab209b5794eb336e1
+  subpackages:
+  - convey
+  - convey/gotest
+  - convey/reporting

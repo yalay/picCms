@@ -1,0 +1,15 @@
+package: .
+
+import:
+- package: github.com/astaxie/beego
+  version: ^1.8.3
+- package: golang.org/x/net
+  repo: https://github.com/golang/net.git
+  subpackages:
+  - html
+
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: ^1.6.2
+  subpackages:
+  - convey
