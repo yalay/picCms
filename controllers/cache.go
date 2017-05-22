@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"errors"
 	"log"
 	"sync"
@@ -22,11 +21,11 @@ const (
 
 type Memory struct {
 	sync.RWMutex
-	values map[string][]byte
+	values map[string]interface{}
 }
 
 func InitCache(minute int) {
-	CACHE = &Memory{values: map[string][]byte{}}
+	CACHE = &Memory{values: map[string]interface{}{}}
 	CACHE.timer(minute)
 }
 
@@ -34,32 +33,18 @@ func MakeCacheKey(args... string) string {
 	return strings.Join(args, "@")
 }
 
-func (memory *Memory) Get(key string) (string, error) {
+func (memory *Memory) Get(key string) (interface{}, error) {
 	if memory == nil {
-		return "", ErrCacheDisable
+		return nil, ErrCacheDisable
 	}
 
 	memory.RLock()
 	defer memory.RUnlock()
 
 	if value, ok := memory.values[key]; ok {
-		return string(value), nil
+		return value, nil
 	}
-	return "", ErrNotFound
-}
-
-func (memory *Memory) Unmarshal(key string, object interface{}) error {
-	if memory == nil {
-		return ErrCacheDisable
-	}
-
-	memory.RLock()
-	defer memory.RUnlock()
-
-	if value, ok := memory.values[key]; ok {
-		return json.Unmarshal(value, object)
-	}
-	return ErrNotFound
+	return nil, ErrNotFound
 }
 
 func (memory *Memory) Set(key string, value interface{}) {
@@ -68,7 +53,7 @@ func (memory *Memory) Set(key string, value interface{}) {
 	}
 
 	memory.Lock()
-	memory.values[key] = convertToBytes(value)
+	memory.values[key] = value
 	memory.Unlock()
 }
 
@@ -91,18 +76,6 @@ func (memory *Memory) timer(minute int) {
 
 func (memory *Memory) clear() {
 	memory.Lock()
-	memory.values = map[string][]byte{}
+	memory.values = map[string]interface{}{}
 	memory.Unlock()
-}
-
-func convertToBytes(value interface{}) []byte {
-	switch result := value.(type) {
-	case string:
-		return []byte(result)
-	case []byte:
-		return result
-	default:
-		bytes, _ := json.Marshal(value)
-		return bytes
-	}
 }

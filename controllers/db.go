@@ -1,13 +1,16 @@
 package controllers
 
 import (
-	"models"
-	"log"
-	"strings"
 	"conf"
+	"log"
+	"models"
 	"strconv"
+	"strings"
 
 	"github.com/jinzhu/gorm"
+
+	"bytes"
+	"database/sql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
@@ -55,12 +58,21 @@ func GetRelatedArticles(id int32) []*models.Article {
 		return nil
 	}
 
-	rows, err := DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (?)", strings.Join(tags, ",")).Order("cnt desc").Group("atricle_id").Rows()
+	tagsSql := bytes.NewBufferString("")
+	for i, tag := range tags {
+		if i == 0 {
+			tagsSql.WriteString(`"` + tag + `"`)
+		} else {
+			tagsSql.WriteString(`,"` + tag + `"`)
+		}
+	}
+	rows, err := DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
 	if err != nil {
 		log.Println(err.Error())
 		return nil
 	}
 
+	defer rows.Close()
 	var relatedArticleIds = make([]string, 0)
 	for rows.Next() {
 		var articleId, count int
@@ -76,7 +88,7 @@ func GetRelatedArticles(id int32) []*models.Article {
 	}
 
 	relatedArticles := make([]*models.Article, 0, len(relatedArticleIds))
-	DB.Where("id in (?)", strings.Join(relatedArticleIds, ",")).Find(&relatedArticles)
+	DB.Where("id in (" + strings.Join(relatedArticleIds, ",") + ")").Find(&relatedArticles)
 	return relatedArticles
 }
 
@@ -171,6 +183,46 @@ func GetArticleAttach(articleId int32, pageId int) *models.Attach {
 		return nil
 	}
 	return attach
+}
+
+func GetTagArticleNum(tag string) int {
+	var count int
+	DB.Model(&models.Tags{}).Where("tag = ?", tag).Count(&count)
+	return count
+}
+
+func GetTagPageArticles(tag string, pageNum int) []*models.Article {
+	if pageNum <= 0 {
+		return nil
+	}
+
+	var rows *sql.Rows
+	var err error
+	if pageNum == 1 {
+		rows, err = DB.Model(&models.Tags{}).Limit(conf.KpageArticleNum).Order("article_id desc").Select("article_id").Where("tag = ?", tag).Rows()
+	} else {
+		rows, err = DB.Model(&models.Tags{}).Offset((pageNum-1)*conf.KpageArticleNum).Limit(conf.KpageArticleNum).Order("article_id desc").Where("tag = ?", tag).Rows()
+	}
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
+	defer rows.Close()
+
+	tagArticleStrIds := make([]string, 0)
+	for rows.Next() {
+		var articleId int
+		rows.Scan(&articleId)
+		tagArticleStrIds = append(tagArticleStrIds, strconv.Itoa(articleId))
+	}
+
+	if len(tagArticleStrIds) == 0 {
+		return nil
+	}
+
+	tagArticles := make([]*models.Article, 0, len(tagArticleStrIds))
+	DB.Where("id in (" + strings.Join(tagArticleStrIds, ",") + ")").Find(&tagArticles)
+	return tagArticles
 }
 
 func GetGconfig(key string) string {

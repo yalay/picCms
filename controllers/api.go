@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"time"
-	"strconv"
-	"models"
 	"conf"
+	"models"
 	"path"
+	"strconv"
 	"strings"
+	"time"
 
-	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 )
 
 const (
@@ -23,9 +23,8 @@ type HomeController struct {
 
 func (c *HomeController) Get() {
 	cacheKey := MakeCacheKey(KcachePrefixHome)
-	cacheData := map[interface{}]interface{}{}
-	if CACHE.Unmarshal(cacheKey, cacheData) == nil {
-		c.Data = cacheData
+	if cacheData, err := CACHE.Get(cacheKey); err == nil {
+		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
 		c.Data["cid"] = int32(0)
 		c.Data["webName"] = GetGconfig("web_name")
@@ -64,18 +63,17 @@ func (c *CateController) Get() {
 	}
 
 	cacheKey := MakeCacheKey(KcachePrefixCate, cateOriId, pageStrId)
-	cacheData := map[interface{}]interface{}{}
-	if CACHE.Unmarshal(cacheKey, cacheData) == nil {
-		c.Data = cacheData
+	if cacheData, err := CACHE.Get(cacheKey); err == nil {
+		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
 		cateUrl := conf.GetCateUrl(cateId)
 		pathExt := path.Ext(cateUrl)
 		page := &models.Page{
-			TotalNum:((GetCateArticleNum(cateId)-1) / conf.KpageArticleNum) + 1,
-			CurNum: pageId,
-			SizeNum: 10,
-			UrlPrefix:strings.TrimSuffix(cateUrl, pathExt),
-			UrlSuffix:pathExt,
+			TotalNum:  ((GetCateArticleNum(cateId) - 1) / conf.KpageArticleNum) + 1,
+			CurNum:    pageId,
+			SizeNum:   10,
+			UrlPrefix: strings.TrimSuffix(cateUrl, pathExt),
+			UrlSuffix: pathExt,
 		}
 		c.Data["webName"] = GetGconfig("web_name")
 		c.Data["webKeywords"] = GetGconfig("web_keywords")
@@ -87,10 +85,12 @@ func (c *CateController) Get() {
 		c.Data["cDesc"] = cate.Cdescription
 		c.Data["cArticles"] = GetCatePageArticles(cateId, pageId)
 		c.Data["pagination"] = page.Html()
+		CACHE.Set(cacheKey, c.Data)
 	}
 
 	c.TplName = "cate.tpl"
 }
+
 type ArticleController struct {
 	beego.Controller
 }
@@ -100,7 +100,6 @@ func (c *ArticleController) Get() {
 	pageStrId := c.Ctx.Input.Param(":page")
 
 	articleIntId, _ := strconv.Atoi(articleStrId)
-	pageId, _ := strconv.Atoi(pageStrId)
 	if articleIntId == 0 {
 		c.Ctx.WriteString("invalid article id")
 		return
@@ -113,6 +112,7 @@ func (c *ArticleController) Get() {
 		return
 	}
 
+	pageId, _ := strconv.Atoi(pageStrId)
 	if pageId == 0 {
 		pageId = 1
 	}
@@ -129,19 +129,18 @@ func (c *ArticleController) Get() {
 	}
 
 	cacheKey := MakeCacheKey(KcachePrefixArticle, articleStrId, pageStrId)
-	cacheData := map[interface{}]interface{}{}
-	if CACHE.Unmarshal(cacheKey, cacheData) == nil {
-		c.Data = cacheData
+	if cacheData, err := CACHE.Get(cacheKey); err == nil {
+		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
 		attachNum := GetArticleAttachNum(articleId)
 		articleUrl := conf.GetArticleUrl(articleId)
 		pathExt := path.Ext(articleUrl)
 		page := &models.Page{
-			TotalNum:attachNum,
-			CurNum: pageId,
-			SizeNum: 10,
-			UrlPrefix:strings.TrimSuffix(articleUrl, pathExt),
-			UrlSuffix:pathExt,
+			TotalNum:  attachNum,
+			CurNum:    pageId,
+			SizeNum:   10,
+			UrlPrefix: strings.TrimSuffix(articleUrl, pathExt),
+			UrlSuffix: pathExt,
 		}
 
 		c.Data["webName"] = GetGconfig("web_name")
@@ -167,12 +166,53 @@ func (c *ArticleController) Get() {
 			if len(relatedArticles) <= 9 {
 				return relatedArticles
 			}
-			return relatedArticles[:10]
-		}
+			return relatedArticles[:9]
+		}()
 		c.Data["tags"] = GetArticleTags(articleId)
+		CACHE.Set(cacheKey, c.Data)
 	}
 
 	c.TplName = "article.tpl"
+}
+
+type TagController struct {
+	beego.Controller
+}
+
+func (c *TagController) Get() {
+	tag := c.Ctx.Input.Param(":tag")
+	pageStrId := c.Ctx.Input.Param(":page")
+
+	cacheKey := MakeCacheKey(KcachePrefixTag, tag, pageStrId)
+	if cacheData, err := CACHE.Get(cacheKey); err == nil {
+		c.Data = cacheData.(map[interface{}]interface{})
+	} else {
+		pageId, _ := strconv.Atoi(pageStrId)
+		if pageId == 0 {
+			pageId = 1
+		}
+
+		tagUrl := conf.GetTagUrl(tag)
+		pathExt := path.Ext(tagUrl)
+		page := &models.Page{
+			TotalNum:  ((GetTagArticleNum(tag) - 1) / conf.KpageArticleNum) + 1,
+			CurNum:    pageId,
+			SizeNum:   10,
+			UrlPrefix: strings.TrimSuffix(tagUrl, pathExt),
+			UrlSuffix: pathExt,
+		}
+		c.Data["webName"] = GetGconfig("web_name")
+		c.Data["webKeywords"] = GetGconfig("web_keywords")
+		c.Data["webDesc"] = GetGconfig("web_description")
+		c.Data["cid"] = int32(0)
+		c.Data["tag"] = tag
+		c.Data["pageId"] = pageId
+		c.Data["tArticles"] = GetTagPageArticles(tag, pageId)
+		c.Data["pagination"] = page.Html()
+		CACHE.Set(cacheKey, c.Data)
+	}
+
+	c.TplName = "tag.tpl"
 }
 
 func AdminHandler(c *context.Context) {
@@ -188,4 +228,3 @@ func TimeFormat2(ts int64) string {
 	curTime := time.Unix(ts, 0)
 	return curTime.Format(kTimeLayout2)
 }
-
