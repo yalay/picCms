@@ -12,6 +12,7 @@ const (
 func init() {
 	controllers.InitDb()
 	controllers.InitAdmin(kAdminPath)
+	controllers.InitCache(240)
 }
 
 func main() {

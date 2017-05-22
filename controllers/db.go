@@ -173,28 +173,6 @@ func GetArticleAttach(articleId int32, pageId int) *models.Attach {
 	return attach
 }
 
-func GetArticleAttachs(articleId int32) []*models.Attach {
-	attachs := make([]*models.Attach, 0)
-	DB.Where("article_id = ?", articleId).Find(&attachs)
-	if len(attachs) == 0 {
-		return nil
-	}
-	return attachs
-}
-
-func GetArticleAttachUrls(articleId int32) []string {
-	attachs := GetArticleAttachs(articleId)
-	if len(attachs) == 0 {
-		return nil
-	}
-
-	attachUrls := make([]string, len(attachs))
-	for i, attach := range attachs {
-		attachUrls[i] = attach.File
-	}
-	return attachUrls
-}
-
 func GetGconfig(key string) string {
 	config := &models.Config{
 		Name: key,

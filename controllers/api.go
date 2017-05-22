@@ -22,10 +22,18 @@ type HomeController struct {
 }
 
 func (c *HomeController) Get() {
-	c.Data["cid"] = int32(0)
-	c.Data["webName"] = GetGconfig("web_name")
-	c.Data["webKeywords"] = GetGconfig("web_keywords")
-	c.Data["webDesc"] = GetGconfig("web_description")
+	cacheKey := MakeCacheKey(KcachePrefixHome)
+	cacheData := map[interface{}]interface{}{}
+	if CACHE.Unmarshal(cacheKey, cacheData) == nil {
+		c.Data = cacheData
+	} else {
+		c.Data["cid"] = int32(0)
+		c.Data["webName"] = GetGconfig("web_name")
+		c.Data["webKeywords"] = GetGconfig("web_keywords")
+		c.Data["webDesc"] = GetGconfig("web_description")
+		CACHE.Set(cacheKey, c.Data)
+	}
+
 	c.TplName = "index.tpl"
 }
 
@@ -35,10 +43,10 @@ type CateController struct {
 
 func (c *CateController) Get() {
 	cateOriId := c.Ctx.Input.Param(":id")
-	pageOriId := c.Ctx.Input.Param(":page")
+	pageStrId := c.Ctx.Input.Param(":page")
 
 	cateIntId, _ := strconv.Atoi(cateOriId)
-	pageId, _ := strconv.Atoi(pageOriId)
+	pageId, _ := strconv.Atoi(pageStrId)
 	if cateIntId == 0 {
 		c.Ctx.WriteString("invalid cate id")
 		return
@@ -55,25 +63,32 @@ func (c *CateController) Get() {
 		pageId = 1
 	}
 
-	cateUrl := conf.GetCateUrl(cateId)
-	pathExt := path.Ext(cateUrl)
-	page := &models.Page{
-		TotalNum:((GetCateArticleNum(cateId)-1) / conf.KpageArticleNum) + 1,
-		CurNum: pageId,
-		SizeNum: 10,
-		UrlPrefix:strings.TrimSuffix(cateUrl, pathExt),
-		UrlSuffix:pathExt,
+	cacheKey := MakeCacheKey(KcachePrefixCate, cateOriId, pageStrId)
+	cacheData := map[interface{}]interface{}{}
+	if CACHE.Unmarshal(cacheKey, cacheData) == nil {
+		c.Data = cacheData
+	} else {
+		cateUrl := conf.GetCateUrl(cateId)
+		pathExt := path.Ext(cateUrl)
+		page := &models.Page{
+			TotalNum:((GetCateArticleNum(cateId)-1) / conf.KpageArticleNum) + 1,
+			CurNum: pageId,
+			SizeNum: 10,
+			UrlPrefix:strings.TrimSuffix(cateUrl, pathExt),
+			UrlSuffix:pathExt,
+		}
+		c.Data["webName"] = GetGconfig("web_name")
+		c.Data["webKeywords"] = GetGconfig("web_keywords")
+		c.Data["webDesc"] = GetGconfig("web_description")
+		c.Data["cid"] = cateId
+		c.Data["pageId"] = pageId
+		c.Data["cName"] = cate.Name
+		c.Data["cKeywords"] = cate.Ckeywords
+		c.Data["cDesc"] = cate.Cdescription
+		c.Data["cArticles"] = GetCatePageArticles(cateId, pageId)
+		c.Data["pagination"] = page.Html()
 	}
-	c.Data["webName"] = GetGconfig("web_name")
-	c.Data["webKeywords"] = GetGconfig("web_keywords")
-	c.Data["webDesc"] = GetGconfig("web_description")
-	c.Data["cid"] = cateId
-	c.Data["pageId"] = pageId
-	c.Data["cName"] = cate.Name
-	c.Data["cKeywords"] = cate.Ckeywords
-	c.Data["cDesc"] = cate.Cdescription
-	c.Data["cArticles"] = GetCatePageArticles(cateId, pageId)
-	c.Data["pagination"] = page.Html()
+
 	c.TplName = "cate.tpl"
 }
 type ArticleController struct {
@@ -81,11 +96,11 @@ type ArticleController struct {
 }
 
 func (c *ArticleController) Get() {
-	articleOriId := c.Ctx.Input.Param(":id")
-	pageOriId := c.Ctx.Input.Param(":page")
+	articleStrId := c.Ctx.Input.Param(":id")
+	pageStrId := c.Ctx.Input.Param(":page")
 
-	articleIntId, _ := strconv.Atoi(articleOriId)
-	pageId, _ := strconv.Atoi(pageOriId)
+	articleIntId, _ := strconv.Atoi(articleStrId)
+	pageId, _ := strconv.Atoi(pageStrId)
 	if articleIntId == 0 {
 		c.Ctx.WriteString("invalid article id")
 		return
@@ -113,43 +128,50 @@ func (c *ArticleController) Get() {
 		return
 	}
 
-	attachNum := GetArticleAttachNum(articleId)
-	articleUrl := conf.GetArticleUrl(articleId)
-	pathExt := path.Ext(articleUrl)
-	page := &models.Page{
-		TotalNum:attachNum,
-		CurNum: pageId,
-		SizeNum: 10,
-		UrlPrefix:strings.TrimSuffix(articleUrl, pathExt),
-		UrlSuffix:pathExt,
+	cacheKey := MakeCacheKey(KcachePrefixArticle, articleStrId, pageStrId)
+	cacheData := map[interface{}]interface{}{}
+	if CACHE.Unmarshal(cacheKey, cacheData) == nil {
+		c.Data = cacheData
+	} else {
+		attachNum := GetArticleAttachNum(articleId)
+		articleUrl := conf.GetArticleUrl(articleId)
+		pathExt := path.Ext(articleUrl)
+		page := &models.Page{
+			TotalNum:attachNum,
+			CurNum: pageId,
+			SizeNum: 10,
+			UrlPrefix:strings.TrimSuffix(articleUrl, pathExt),
+			UrlSuffix:pathExt,
+		}
+
+		c.Data["webName"] = GetGconfig("web_name")
+		c.Data["webKeywords"] = GetGconfig("web_keywords")
+		c.Data["webDesc"] = GetGconfig("web_description")
+		c.Data["title"] = article.Title
+		c.Data["id"] = articleId
+		c.Data["pubDate"] = TimeFormat(article.Addtime)
+		c.Data["attachNum"] = attachNum
+		c.Data["pageId"] = pageId
+		c.Data["cName"] = cate.Name
+		c.Data["cid"] = cate.Cid
+		c.Data["cKeywords"] = cate.Ckeywords
+		c.Data["cDesc"] = cate.Cdescription
+		c.Data["cUrl"] = conf.GetCateUrl(cate.Cid)
+		c.Data["file"] = attach.File
+		c.Data["hits"] = article.Hits
+		c.Data["preUrl"] = page.PreUrl()
+		c.Data["nextUrl"] = page.NextUrl()
+		c.Data["pagination"] = page.Html()
+		c.Data["relates"] = func() []*models.Article {
+			relatedArticles := GetRelatedArticles(articleId)
+			if len(relatedArticles) <= 9 {
+				return relatedArticles
+			}
+			return relatedArticles[:10]
+		}
+		c.Data["tags"] = GetArticleTags(articleId)
 	}
 
-	c.Data["webName"] = GetGconfig("web_name")
-	c.Data["webKeywords"] = GetGconfig("web_keywords")
-	c.Data["webDesc"] = GetGconfig("web_description")
-	c.Data["title"] = article.Title
-	c.Data["id"] = articleId
-	c.Data["pubDate"] = TimeFormat(article.Addtime)
-	c.Data["attachNum"] = attachNum
-	c.Data["pageId"] = pageId
-	c.Data["cName"] = cate.Name
-	c.Data["cid"] = cate.Cid
-	c.Data["cKeywords"] = cate.Ckeywords
-	c.Data["cDesc"] = cate.Cdescription
-	c.Data["cUrl"] = conf.GetCateUrl(cate.Cid)
-	c.Data["file"] = attach.File
-	c.Data["hits"] = article.Hits
-	c.Data["preUrl"] = page.PreUrl()
-	c.Data["nextUrl"] = page.NextUrl()
-	c.Data["pagination"] = page.Html()
-	c.Data["relates"] = func() []*models.Article {
-		relatedArticles := GetRelatedArticles(articleId)
-		if len(relatedArticles) <= 9 {
-			return relatedArticles
-		}
-		return relatedArticles[:10]
-	}
-	c.Data["tags"] = GetArticleTags(articleId)
 	c.TplName = "article.tpl"
 }
 
