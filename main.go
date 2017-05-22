@@ -2,18 +2,19 @@ package main
 
 import (
 	"controllers"
+	"server"
+)
 
-	"github.com/astaxie/beego"
-
-	_ "routers"
+const (
+	kAdminPath = "/admin"
 )
 
 func init() {
 	controllers.InitDb()
-	controllers.InitAdmin("/admin")
+	controllers.InitAdmin(kAdminPath)
 }
 
 func main() {
-	beego.Run()
+	server.Run(kAdminPath)
 }
 

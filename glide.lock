@@ -1,5 +1,5 @@
 hash: 58036e4bd101ca065968501d457d6d190ce67dbe3bc9efb04be86929f315b678
-updated: 2017-05-21T10:32:06.5619214+08:00
+updated: 2017-05-22T09:49:32.5807181+08:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 948702997351133e1cc5a1b5842313ca46deeb0d
@@ -52,20 +52,7 @@ imports:
   - html
   - html/atom
 testImports:
-- name: github.com/gopherjs/gopherjs
-  version: 6997325cc76f13635f68ad9e1c38544966eb7de2
-  subpackages:
-  - js
-- name: github.com/jtolds/gls
-  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
-- name: github.com/smartystreets/assertions
-  version: f8459f92181409546d2762c9e9c4bedc23c92d76
-  subpackages:
-  - internal/go-render/render
-  - internal/oglematchers
 - name: github.com/smartystreets/goconvey
   version: d4c757aa9afd1e2fc1832aaab209b5794eb336e1
   subpackages:
   - convey
-  - convey/gotest
-  - convey/reporting

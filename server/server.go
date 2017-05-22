@@ -1,4 +1,4 @@
-package routers
+package server
 
 import (
 	"controllers"
@@ -7,11 +7,7 @@ import (
 	"github.com/astaxie/beego"
 )
 
-const (
-	kAdminPath = "/admin"
-)
-
-func init() {
+func router(adminPath string) {
 	// 控制器注册
     beego.Router("/", &controllers.HomeController{})
     beego.Router("/list-:id([0-9]+).html", &controllers.CateController{})
@@ -30,13 +26,15 @@ func init() {
 	beego.AddFuncMap("func_time2",controllers.TimeFormat2)
 	beego.AddFuncMap("func_articleurl",conf.GetArticleUrl)
 	beego.AddFuncMap("func_cateurl",conf.GetCateUrl)
-	beego.AddFuncMap("g_config",controllers.GetGconfig)
-
-
 
 	// 后台面板路由注册
-	beego.Get(kAdminPath, controllers.AdminHandler)
-	beego.Post(kAdminPath, controllers.AdminHandler)
-	beego.Get(kAdminPath+"/*sub", controllers.AdminHandler)
-	beego.Post(kAdminPath+"/*sub", controllers.AdminHandler)
+	beego.Get(adminPath, controllers.AdminHandler)
+	beego.Post(adminPath, controllers.AdminHandler)
+	beego.Get(adminPath+"/*sub", controllers.AdminHandler)
+	beego.Post(adminPath+"/*sub", controllers.AdminHandler)
+}
+
+func Run(adminPath string) {
+	router(adminPath)
+	beego.Run()
 }
