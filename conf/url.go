@@ -9,3 +9,7 @@ func GetArticleUrl(articleId int32) string {
 func GetCateUrl(cateId int32) string {
 	return "/list-" + strconv.Itoa(int(cateId)) + ".html"
 }
+
+func GetTagUrl(tag string) string  {
+	return "/tag-" + tag + ".html"
+}

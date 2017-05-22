@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 	"conf"
+	"strconv"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -46,6 +47,37 @@ func GetArticleTags(id int32) []string {
 	}
 
 	return strings.Split(article.Keywords, ",")
+}
+
+func GetRelatedArticles(id int32) []*models.Article {
+	tags := GetArticleTags(id)
+	if len(tags) == 0 {
+		return nil
+	}
+
+	rows, err := DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (?)", strings.Join(tags, ",")).Order("cnt desc").Group("atricle_id").Rows()
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
+
+	var relatedArticleIds = make([]string, 0)
+	for rows.Next() {
+		var articleId, count int
+		rows.Scan(&articleId, &count)
+		if articleId == int(id) {
+			continue
+		}
+		relatedArticleIds = append(relatedArticleIds, strconv.Itoa(articleId))
+	}
+
+	if len(relatedArticleIds) == 0 {
+		return nil
+	}
+
+	relatedArticles := make([]*models.Article, 0, len(relatedArticleIds))
+	DB.Where("id in (?)", strings.Join(relatedArticleIds, ",")).Find(&relatedArticles)
+	return relatedArticles
 }
 
 func GetArtilceCate(id int32) *models.Cate {

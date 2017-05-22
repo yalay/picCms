@@ -26,6 +26,7 @@ func router(adminPath string) {
 	beego.AddFuncMap("func_time2",controllers.TimeFormat2)
 	beego.AddFuncMap("func_articleurl",conf.GetArticleUrl)
 	beego.AddFuncMap("func_cateurl",conf.GetCateUrl)
+	beego.AddFuncMap("func_tagurl",conf.GetTagUrl)
 
 	// 后台面板路由注册
 	beego.Get(adminPath, controllers.AdminHandler)

@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"time"
-
-	"github.com/astaxie/beego/context"
-	"github.com/astaxie/beego"
 	"strconv"
 	"models"
 	"conf"
 	"path"
 	"strings"
+
+	"github.com/astaxie/beego/context"
+	"github.com/astaxie/beego"
 )
 
 const (
@@ -142,6 +142,14 @@ func (c *ArticleController) Get() {
 	c.Data["preUrl"] = page.PreUrl()
 	c.Data["nextUrl"] = page.NextUrl()
 	c.Data["pagination"] = page.Html()
+	c.Data["relates"] = func() []*models.Article {
+		relatedArticles := GetRelatedArticles(articleId)
+		if len(relatedArticles) <= 9 {
+			return relatedArticles
+		}
+		return relatedArticles[:10]
+	}
+	c.Data["tags"] = GetArticleTags(articleId)
 	c.TplName = "article.tpl"
 }
 

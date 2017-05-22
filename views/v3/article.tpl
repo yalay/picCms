@@ -51,15 +51,15 @@
 				</div>
 				<div class="content_right_title">相关资源：
 					<span class="single-tags">
-					<!-- 待补充 -->
+					{{range .tags}}
+                    <a href="{{func_tagurl .}}">{{.}} </a>
+                    {{end}}
 					</span>
 				</div>
 				<ul class="xg_content">
-					<li class="i_list_frame list_n2">
-					    <script type="text/javascript" data-idzone="2581393" src="https://ads.exoclick.com/nativeads.js"></script>
-						<div class="meta_zan xl_1"><i class="fa fa-eye"></i> 99+ </div>
-					</li>
-					<!-- 待补充 -->
+					{{range .relates}}
+                    {{template "list" .}}
+                    {{end}}
 				</ul>
 				<section class="single-post-comment">
                     <div class="single-post-comment-reply" id="respond" >

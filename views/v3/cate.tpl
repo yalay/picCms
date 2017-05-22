@@ -20,10 +20,6 @@
 	<div class="update_area">
 		<div class="update_area_content">
 			<ul class="update_area_lists cl">
-				<li class="i_list_frame list_n2">
-					<script type="text/javascript" data-idzone="2581393" src="https://ads.exoclick.com/nativeads.js"></script>
-					<div class="meta_zan xl_1"><i class="fa fa-eye"></i> 99+ </div>
-				</li>
 				{{range .cArticles}}
 				{{template "list" .}}
 				{{end}}
