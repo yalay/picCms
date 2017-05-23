@@ -6,6 +6,7 @@ import (
 
 	"github.com/qor/qor"
 	"github.com/qor/admin"
+	"github.com/astaxie/beego/context"
 )
 
 var Admin *admin.Admin
@@ -21,4 +22,8 @@ func InitAdmin(adminPath string) {
 	Admin.AddResource(&models.Tags{}, &admin.Config{Menu: []string{"资源管理"}})
 
 	AdminServer = Admin.NewServeMux(adminPath)
+}
+
+func AdminHandler(c *context.Context) {
+	AdminServer.ServeHTTP(c.ResponseWriter, c.Request)
 }
