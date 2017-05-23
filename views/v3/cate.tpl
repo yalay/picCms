@@ -26,10 +26,10 @@
 			</ul>
 			<nav class="navigation pagination" role="navigation">
 				<h2 class="screen-reader-text">文章导航</h2>
-				<div class="nav-links">{{str2html .pagination}}</div>
+				<div class="nav-links">{{if .pagination}}{{str2html .pagination}}{{end}}</div>
 			</nav>
 		</div>
 	</div>
-	{{template "footer"}}
+	{{template "footer" .}}
 </body>
 </html>

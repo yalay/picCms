@@ -3,13 +3,13 @@ package conf
 import "strconv"
 
 func GetArticleUrl(articleId int32) string {
-	return "/post-" + strconv.Itoa(int(articleId)) + ".html"
+	return "/article-" + strconv.Itoa(int(articleId)) + ".html"
 }
 
-func GetCateUrl(cateId int32) string {
-	return "/list-" + strconv.Itoa(int(cateId)) + ".html"
+func GetCateUrl(engName string) string {
+	return "/" + engName + ".html"
 }
 
 func GetTagUrl(tag string) string  {
-	return "/tag-" + tag + ".html"
+	return "/tags-" + tag + ".html"
 }

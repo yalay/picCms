@@ -29,7 +29,7 @@
 						<a href="{{.nextUrl}}" title="下一页" class="next-cat"><i class="fa fa-chevron-right"></i></a>
 						<div class="image_div" id="image_div">
 							<p><a href="{{.nextUrl}}"><img src="{{.file}}" alt="{{.title}}" title="点击图片查看下一张"></a></p>
-							<div class="nav-links page_imges">{{str2html .pagination}}</div>
+							<div class="nav-links page_imges">{{if .pagination}}{{str2html .pagination}}{{end}}</div>
 						</div>
 
 						<div class="tag cl" style="margin-top:30px;">
@@ -72,10 +72,11 @@
 			</div>
 		</div>
 	</div>
-	{{template "footer"}}
+	{{template "footer" .}}
 	<script type="text/javascript">
 		var articleId = "{{.id}}";
         var web_script = "/";
+        $.post("/social/{{.id}}/view");
 	</script>
 	<script type="text/javascript" src="/js/ajax.js"></script>
     <!-- JiaThis Button BEGIN -->

@@ -40,6 +40,8 @@ func (c *TagController) Get() {
 		c.Data["webName"] = controllers.GetGconfig("web_name")
 		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
 		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
+		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = int32(0)
 		c.Data["tag"] = tag
 		c.Data["pageId"] = pageId

@@ -6,17 +6,22 @@ import (
 	"controllers/api"
 
 	"github.com/astaxie/beego"
+	"strings"
 )
 
 func router(adminPath string) {
 	// 控制器注册
 	beego.Router("/", &api.HomeController{})
-	beego.Router("/list-:id([0-9]+).html", &api.CateController{})
-	beego.Router("/list-:id([0-9]+)-:page([0-9]+).html", &api.CateController{})
-	beego.Router("/post-:id([0-9]+).html", &api.ArticleController{})
-	beego.Router("/post-:id([0-9]+)-:page([0-9]+).html", &api.ArticleController{})
-	beego.Router("/tag-:tag.html", &api.TagController{})
-	beego.Router("/tag-:tag-:page([0-9]+).html", &api.TagController{})
+
+	cateEngNames := controllers.GetCateEngNames()
+	cateEngNamesExp := strings.Join(cateEngNames, "|")
+	beego.Router("/:engname("+cateEngNamesExp+").html", &api.CateController{})
+	beego.Router("/:engname("+cateEngNamesExp+")-:page([0-9]+).html", &api.CateController{})
+
+	beego.Router("/article-:id([0-9]+).html", &api.ArticleController{})
+	beego.Router("/article-:id([0-9]+)-:page([0-9]+).html", &api.ArticleController{})
+	beego.Router("/tags-:tag.html", &api.TagController{})
+	beego.Router("/tags-:tag-:page([0-9]+).html", &api.TagController{})
 	beego.Router("/social/:id/:action", &api.SocialController{})
 
 	beego.SetViewsPath("views/v3")

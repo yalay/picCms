@@ -21,10 +21,10 @@
 	{{range func_cates}}
         <div class="home-filter">
             <div class="h-screen-wrap">
-                <ul class="h-screen"><li class="current-menu-item"><a href="{{func_cateurl .Cid}}"> {{.Name}} </a></li></ul>
+                <ul class="h-screen"><li class="current-menu-item"><a href="{{func_cateurl .EngName}}"> {{.Name}} </a></li></ul>
             </div>
             <ul class="h-soup cl">
-                <li class="open"><i class="fa fa-coffee"></i><a href="{{func_cateurl .Cid}}" title="{{.Name}}">  查看更多 </a></li>
+                <li class="open"><i class="fa fa-coffee"></i><a href="{{func_cateurl .EngName}}" title="{{.Name}}">  查看更多 </a></li>
             </ul>
         </div>
         <div class="update_area">
@@ -37,7 +37,7 @@
             </div>
         </div>
 	{{end}}
-	{{template "footer"}}
+	{{template "footer" .}}
 	<script type="text/javascript" src="//cdn.bootcss.com/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){

@@ -66,6 +66,8 @@ func (c *ArticleController) Get() {
 		c.Data["webName"] = controllers.GetGconfig("web_name")
 		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
 		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
+		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["title"] = article.Title
 		c.Data["id"] = articleId
 		c.Data["pubDate"] = TimeFormat(article.Addtime)
@@ -75,7 +77,7 @@ func (c *ArticleController) Get() {
 		c.Data["cid"] = cate.Cid
 		c.Data["cKeywords"] = cate.Ckeywords
 		c.Data["cDesc"] = cate.Cdescription
-		c.Data["cUrl"] = conf.GetCateUrl(cate.Cid)
+		c.Data["cUrl"] = conf.GetCateUrl(cate.EngName)
 		c.Data["file"] = attach.File
 		c.Data["hits"] = article.Hits
 		c.Data["preUrl"] = page.PreUrl()

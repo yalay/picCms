@@ -15,7 +15,7 @@
 			<a href="{{.mapUrl}}">网站地图</a>
 			<a href="{{.rssurl}}">RSS订阅</a>
 		</p>
-		<p>{{.copyright}}{{.tongji}}</p>
+		<p>{{if .copyright}}{{str2html .copyright}}{{end}}{{if .tongji}}{{str2html .tongji}}{{end}}</p>
 	</div>
 	<div class="cbbfixed" style="bottom: -90px;"><a class="gotop cbbtn"><i class="fa fa-angle-up"></i></a></div>
 </footer>

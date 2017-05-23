@@ -31,13 +31,12 @@ type Page struct {
 }
 
 func (p *Page) Html() string {
-	if p.TotalNum == 1 {
-		return ""
-	}
-
-	buff := bytes.Buffer{}
 	// 固定显示上一页链接和第一页链接，除非就是第一页
-	if p.CurNum > 1 {
+	buff := bytes.Buffer{}
+	if p.CurNum == 1 {
+		buff.WriteString(`<a class="current page-numbers" href="` + p.UrlPrefix + p.UrlSuffix +
+			`">1</a>`)
+	} else {
 		if p.CurNum == 2 {
 			buff.WriteString(`<a class="prev page-numbers" href="` +
 				p.UrlPrefix + p.UrlSuffix + `"><i class="fa fa-chevron-left"></i></a>`)
@@ -89,7 +88,10 @@ func (p *Page) Html() string {
 
 
 	// 固定显示最后一页链接和下一页链接，除非就是最后一页
-	if p.CurNum < p.TotalNum {
+	if p.CurNum == p.TotalNum {
+		buff.WriteString(`<a class="current page-numbers" href="` + p.UrlPrefix + "-" +
+			strconv.Itoa(p.TotalNum) + p.UrlSuffix + `">` + strconv.Itoa(p.TotalNum) + `</a>`)
+	} else {
 		buff.WriteString(`<a class="page-numbers" href="` + p.UrlPrefix + "-" +
 			strconv.Itoa(p.TotalNum) + p.UrlSuffix + `">` + strconv.Itoa(p.TotalNum) + `</a>`)
 		buff.WriteString(`<a class="next page-numbers" href="` + p.UrlPrefix + "-" +

@@ -7,7 +7,7 @@
 			<ul>
 				<li {{if eq $.cid 0}} class="current-menu-item"{{end}}><a href="{{.webUrl}}">网站首页</a></li>
 				{{range func_cates}}
-				<li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .Cid}}">{{.Name}}</a></li>
+				<li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .EngName}}">{{.Name}}</a></li>
 				{{end}}
 			</ul>
 		</div>
@@ -15,7 +15,7 @@
 			<ul id="mobile_menu">
 			<li {{if eq $.cid 0}} class="current-menu-item"{{end}}><a href="{{.webUrl}}">网站首页</a></li>
 			{{range func_cates}}
-			<li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .Cid}}">{{.Name}}</a></li>
+			<li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .EngName}}">{{.Name}}</a></li>
 			{{end}}
 		</div>
 	</div>

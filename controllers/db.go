@@ -131,11 +131,40 @@ func GetCates() []*models.Cate {
 	return cates
 }
 
+func GetCateEngNames() []string {
+	rows, err := DB.Model(&models.Cate{}).Select("eng_name").Rows()
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
+	defer rows.Close()
+
+	engNames := make([]string, 0)
+	for rows.Next() {
+		var engName string
+		rows.Scan(&engName)
+		if engName == "" {
+			continue
+		}
+		engNames = append(engNames, engName)
+	}
+	return engNames
+}
+
 func GetCate(cateId int32) *models.Cate {
 	var cate = &models.Cate{
 		Cid: cateId,
 	}
 	DB.First(cate)
+	if cate.Ctitle == "" {
+		return nil
+	}
+	return cate
+}
+
+func GetCateByEngName(cateEngName string) *models.Cate {
+	var cate = &models.Cate{}
+	DB.Where("eng_name = ?", cateEngName).Find(cate)
 	if cate.Ctitle == "" {
 		return nil
 	}
@@ -186,15 +215,15 @@ func GetArticleAttach(articleId int32, pageId int) *models.Attach {
 }
 
 func IncArticleView(articleId int32)  {
-	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("hits", gorm.Expr("hits+1"))
+	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("hits", gorm.Expr("hits + ?", 1))
 }
 
 func IncArticleUp(articleId int32)  {
-	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("up", gorm.Expr("up+1"))
+	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("up", gorm.Expr("up + ?", 1))
 }
 
 func IncArticleDown(articleId int32)  {
-	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("down", gorm.Expr("down+1"))
+	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("down", gorm.Expr("down + ?", 1))
 }
 
 func GetTagArticleNum(tag string) int {

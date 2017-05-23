@@ -18,6 +18,8 @@ func (c *HomeController) Get() {
 		c.Data["webName"] = controllers.GetGconfig("web_name")
 		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
 		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
+		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 

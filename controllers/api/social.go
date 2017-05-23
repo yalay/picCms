@@ -30,6 +30,7 @@ func (c *SocialController) Post() {
 	case kActionTypeView, kActionTypeUp, kActionTypeDown:
 		viewData := c.Ctx.GetCookie(action)
 		if viewData == "" {
+			controllers.IncArticleView(int32(articleIntId))
 			c.Ctx.SetCookie(action, articleStrId, beego.BConfig.WebConfig.Session.SessionCookieLifeTime)
 		} else {
 			var hasViewed bool
