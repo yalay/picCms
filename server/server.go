@@ -17,6 +17,7 @@ func router(adminPath string) {
 	beego.Router("/post-:id([0-9]+)-:page([0-9]+).html", &api.ArticleController{})
 	beego.Router("/tag-:tag.html", &api.TagController{})
 	beego.Router("/tag-:tag-:page([0-9]+).html", &api.TagController{})
+	beego.Router("/social/:id/:action", &api.SocialController{})
 
 	beego.SetViewsPath("views/v3")
 	beego.SetStaticPath("/css", "views/v3/css")

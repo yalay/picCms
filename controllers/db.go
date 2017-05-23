@@ -185,6 +185,18 @@ func GetArticleAttach(articleId int32, pageId int) *models.Attach {
 	return attach
 }
 
+func IncArticleView(articleId int32)  {
+	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("hits", gorm.Expr("hits+1"))
+}
+
+func IncArticleUp(articleId int32)  {
+	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("up", gorm.Expr("up+1"))
+}
+
+func IncArticleDown(articleId int32)  {
+	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("down", gorm.Expr("down+1"))
+}
+
 func GetTagArticleNum(tag string) int {
 	var count int
 	DB.Model(&models.Tags{}).Where("tag = ?", tag).Count(&count)
