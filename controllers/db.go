@@ -6,6 +6,7 @@ import (
 	"models"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jinzhu/gorm"
 
@@ -14,13 +15,27 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+const (
+	retryCount = 3
+)
+
 var DB *gorm.DB
 
 func InitDb() {
 	var err error
 	DB, err = gorm.Open("mysql", "root:root@/tutu")
 	if err != nil {
-		log.Panic(err)
+		for i := 0; i < retryCount; i++ {
+			log.Printf("retry times:%d\n", i+1)
+			time.Sleep(time.Minute)
+			DB, err = gorm.Open("mysql", "root:root@/tutu")
+			if err == nil {
+				break
+			}
+		}
+		if err != nil {
+			log.Panic(err)
+		}
 	}
 
 	DB.AutoMigrate(
@@ -214,15 +229,15 @@ func GetArticleAttach(articleId int32, pageId int) *models.Attach {
 	return attach
 }
 
-func IncArticleView(articleId int32)  {
+func IncArticleView(articleId int32) {
 	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("hits", gorm.Expr("hits + ?", 1))
 }
 
-func IncArticleUp(articleId int32)  {
+func IncArticleUp(articleId int32) {
 	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("up", gorm.Expr("up + ?", 1))
 }
 
-func IncArticleDown(articleId int32)  {
+func IncArticleDown(articleId int32) {
 	DB.Model(&models.Article{}).Where("id = ?", articleId).Update("down", gorm.Expr("down + ?", 1))
 }
 
