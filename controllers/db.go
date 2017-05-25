@@ -1,17 +1,19 @@
 package controllers
 
 import (
+	"bytes"
 	"conf"
+	"database/sql"
 	"log"
 	"models"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
 
-	"bytes"
-	"database/sql"
+	"fmt"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
@@ -23,12 +25,15 @@ var DB *gorm.DB
 
 func InitDb() {
 	var err error
-	DB, err = gorm.Open("mysql", "root:root@/tutu")
+	dbUser := beego.AppConfig.String("mysqluser")
+	dbPass := beego.AppConfig.String("mysqlpass")
+	dbName := beego.AppConfig.String("mysqldb")
+	DB, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@/%s", dbUser, dbPass, dbName))
 	if err != nil {
 		for i := 0; i < retryCount; i++ {
 			log.Printf("retry times:%d\n", i+1)
 			time.Sleep(time.Minute)
-			DB, err = gorm.Open("mysql", "root:root@/tutu")
+			DB, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@/%s", dbUser, dbPass, dbName))
 			if err == nil {
 				break
 			}
