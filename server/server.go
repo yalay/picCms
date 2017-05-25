@@ -20,8 +20,8 @@ func router(adminPath string) {
 
 	beego.Router("/article-:id([0-9]+).html", &api.ArticleController{})
 	beego.Router("/article-:id([0-9]+)-:page([0-9]+).html", &api.ArticleController{})
-	beego.Router(`/tags-:tag(\w+).html`, &api.TagController{})
-	beego.Router(`/tags-:tag(\w+)-:page([0-9]+).html`, &api.TagController{})
+	beego.Router(`/tags-:tag([^-\s]+).html`, &api.TagController{})
+	beego.Router(`/tags-:tag([^-\s]+)-:page([0-9]+).html`, &api.TagController{})
 	beego.Router("/social/:id/:action", &api.SocialController{})
 
 	beego.SetViewsPath("views/v3")
