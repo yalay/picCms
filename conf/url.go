@@ -10,6 +10,10 @@ func GetCateUrl(engName string) string {
 	return "/" + engName + ".html"
 }
 
+func GetTopicUrl(engName string) string {
+	return "/topic-" + engName + ".html"
+}
+
 func GetTagUrl(tag string) string  {
 	return "/tags-" + tag + ".html"
 }

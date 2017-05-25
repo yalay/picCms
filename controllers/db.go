@@ -72,8 +72,33 @@ func GetArticleTags(id int32) []string {
 	return strings.Split(article.Keywords, ",")
 }
 
-func GetRelatedArticles(id int32) []*models.Article {
-	tags := GetArticleTags(id)
+func GetRelatedArticles(id int32, limit int) []*models.Article {
+	tagArticles := GetArticlesByTags(GetArticleTags(id), limit, 0)
+	if len(tagArticles) <= 1 {
+		return nil
+	}
+
+	// 删除自己
+	var matchedIndex int
+	for i, tagArticle := range tagArticles {
+		if tagArticle.Id == id {
+			matchedIndex = i
+			break
+		}
+	}
+
+	relatedArticles := make([]*models.Article, 0, len(tagArticles)-1)
+	if matchedIndex == 0 {
+		relatedArticles = tagArticles[1:]
+	} else if matchedIndex < len(tagArticles) {
+		relatedArticles = append(tagArticles[:matchedIndex], tagArticles[matchedIndex+1:]...)
+	} else {
+		relatedArticles = tagArticles[:matchedIndex]
+	}
+	return relatedArticles
+}
+
+func GetArticlesByTags(tags []string, limit, offset int) []*models.Article {
 	if len(tags) == 0 {
 		return nil
 	}
@@ -86,30 +111,38 @@ func GetRelatedArticles(id int32) []*models.Article {
 			tagsSql.WriteString(`,"` + tag + `"`)
 		}
 	}
-	rows, err := DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+
+	var rows *sql.Rows
+	var err error
+	if limit == 0 {
+		if offset == 0 {
+			rows, err = DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+		} else {
+			rows, err = DB.Model(&models.Tags{}).Offset(offset).Limit(-1).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+		}
+	} else {
+		rows, err = DB.Model(&models.Tags{}).Offset(offset).Limit(limit).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+	}
 	if err != nil {
 		log.Println(err.Error())
 		return nil
 	}
 
 	defer rows.Close()
-	var relatedArticleIds = make([]string, 0)
+	var tagArticleIds = make([]string, 0)
 	for rows.Next() {
 		var articleId, count int
 		rows.Scan(&articleId, &count)
-		if articleId == int(id) {
-			continue
-		}
-		relatedArticleIds = append(relatedArticleIds, strconv.Itoa(articleId))
+		tagArticleIds = append(tagArticleIds, strconv.Itoa(articleId))
 	}
 
-	if len(relatedArticleIds) == 0 {
+	if len(tagArticleIds) == 0 {
 		return nil
 	}
 
-	relatedArticles := make([]*models.Article, 0, len(relatedArticleIds))
-	DB.Where("id in (" + strings.Join(relatedArticleIds, ",") + ")").Find(&relatedArticles)
-	return relatedArticles
+	tagArticles := make([]*models.Article, 0, len(tagArticleIds))
+	DB.Where("id in (" + strings.Join(tagArticleIds, ",") + ")").Find(&tagArticles)
+	return tagArticles
 }
 
 func GetArtilceCate(id int32) *models.Cate {
@@ -284,6 +317,62 @@ func GetTagPageArticles(tag string, pageNum int) []*models.Article {
 	tagArticles := make([]*models.Article, 0, len(tagArticleStrIds))
 	DB.Where("id in (" + strings.Join(tagArticleStrIds, ",") + ")").Find(&tagArticles)
 	return tagArticles
+}
+
+func GetTopics() []*models.Topic {
+	var topics = make([]*models.Topic, 0)
+	DB.Where("status = 1").Find(&topics)
+	return topics
+}
+
+func GetTopicByEngName(topicEngName string) *models.Topic {
+	var topic = &models.Topic{}
+	DB.Where("eng_name = ?", topicEngName).Find(topic)
+	if topic.Name == "" {
+		return nil
+	}
+	return topic
+}
+
+func GetTopicArticleNum(id int32) int {
+	var topic = &models.Topic{
+		Tid: id,
+	}
+	DB.First(topic)
+	if topic.Skeywords == "" {
+		return 0
+	}
+
+	topicTags := strings.Split(topic.Skeywords, ",")
+	tagsSql := bytes.NewBufferString("")
+	for i, tag := range topicTags {
+		if i == 0 {
+			tagsSql.WriteString(`"` + tag + `"`)
+		} else {
+			tagsSql.WriteString(`,"` + tag + `"`)
+		}
+	}
+
+	var count int
+	DB.Model(&models.Tags{}).Select("article_id, count(*)").Where("tag in (" + tagsSql.String() + ")").Group("article_id").Count(&count)
+	return count
+}
+
+func GetTopicPageArticles(topicId int32, pageNum int) []*models.Article {
+	if pageNum <= 0 {
+		return nil
+	}
+
+	var topic = &models.Topic{
+		Tid: topicId,
+	}
+	DB.First(topic)
+	if topic.Name == "" {
+		return nil
+	}
+
+	topicTags := []string{topic.Name, topic.EngName, topic.Stitle}
+	return GetArticlesByTags(topicTags, conf.KpageArticleNum, (pageNum-1)*conf.KpageArticleNum)
 }
 
 func GetGconfig(key string) string {

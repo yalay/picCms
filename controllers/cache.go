@@ -3,9 +3,9 @@ package controllers
 import (
 	"errors"
 	"log"
+	"strings"
 	"sync"
 	"time"
-	"strings"
 )
 
 var ErrNotFound = errors.New("not found")
@@ -17,6 +17,7 @@ const (
 	KcachePrefixArticle = "@a"
 	KcachePrefixCate    = "@c"
 	KcachePrefixTag     = "@t"
+	KcachePrefixTopic   = "@o"
 )
 
 type Memory struct {
@@ -29,7 +30,7 @@ func InitCache(minute int) {
 	CACHE.timer(minute)
 }
 
-func MakeCacheKey(args... string) string {
+func MakeCacheKey(args ...string) string {
 	return strings.Join(args, "@")
 }
 

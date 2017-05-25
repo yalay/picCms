@@ -86,16 +86,17 @@ func (p *Page) Html() string {
 		buff.WriteString(`<a class="page-numbers">...</a>`)
 	}
 
-
-	// 固定显示最后一页链接和下一页链接，除非就是最后一页
-	if p.CurNum == p.TotalNum {
-		buff.WriteString(`<a class="current page-numbers" href="` + p.UrlPrefix + "-" +
-			strconv.Itoa(p.TotalNum) + p.UrlSuffix + `">` + strconv.Itoa(p.TotalNum) + `</a>`)
-	} else {
-		buff.WriteString(`<a class="page-numbers" href="` + p.UrlPrefix + "-" +
-			strconv.Itoa(p.TotalNum) + p.UrlSuffix + `">` + strconv.Itoa(p.TotalNum) + `</a>`)
-		buff.WriteString(`<a class="next page-numbers" href="` + p.UrlPrefix + "-" +
-			strconv.Itoa(p.CurNum+1) + p.UrlSuffix + `">` + `<i class="fa fa-chevron-right"></i></a>`)
+	// 固定显示最后一页链接和下一页链接，除非总共就一页
+	if p.TotalNum > 1 {
+		if p.CurNum == p.TotalNum {
+			buff.WriteString(`<a class="current page-numbers" href="` + p.UrlPrefix + "-" +
+				strconv.Itoa(p.TotalNum) + p.UrlSuffix + `">` + strconv.Itoa(p.TotalNum) + `</a>`)
+		} else {
+			buff.WriteString(`<a class="page-numbers" href="` + p.UrlPrefix + "-" +
+				strconv.Itoa(p.TotalNum) + p.UrlSuffix + `">` + strconv.Itoa(p.TotalNum) + `</a>`)
+			buff.WriteString(`<a class="next page-numbers" href="` + p.UrlPrefix + "-" +
+				strconv.Itoa(p.CurNum+1) + p.UrlSuffix + `">` + `<i class="fa fa-chevron-right"></i></a>`)
+		}
 	}
 
 	return buff.String()

@@ -22,6 +22,8 @@ func router(adminPath string) {
 	beego.Router("/article-:id([0-9]+)-:page([0-9]+).html", &api.ArticleController{})
 	beego.Router(`/tags-:tag([^-\s]+).html`, &api.TagController{})
 	beego.Router(`/tags-:tag([^-\s]+)-:page([0-9]+).html`, &api.TagController{})
+	beego.Router(`/topic-:engname([^-\s]+).html`, &api.TopicController{})
+	beego.Router(`/topic-:engname([^-\s]+)-:page([0-9]+).html`, &api.TopicController{})
 	beego.Router("/social/:id/:action", &api.SocialController{})
 
 	beego.SetViewsPath("views/v3")
@@ -33,11 +35,13 @@ func router(adminPath string) {
 
 	beego.AddFuncMap("func_articles", controllers.GetArticles)
 	beego.AddFuncMap("func_cates", controllers.GetCates)
+	beego.AddFuncMap("func_topics", controllers.GetTopics)
 	beego.AddFuncMap("func_time", api.TimeFormat)
 	beego.AddFuncMap("func_time2", api.TimeFormat2)
 	beego.AddFuncMap("func_articleurl", conf.GetArticleUrl)
 	beego.AddFuncMap("func_cateurl", conf.GetCateUrl)
 	beego.AddFuncMap("func_tagurl", conf.GetTagUrl)
+	beego.AddFuncMap("func_topicurl", conf.GetTopicUrl)
 
 	// 后台面板路由注册
 	beego.Get(adminPath, controllers.AdminHandler)

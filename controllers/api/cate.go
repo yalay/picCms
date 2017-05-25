@@ -33,7 +33,7 @@ func (c *CateController) Get() {
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
-		cateUrl := conf.GetCateUrl(cate.EngName)
+		cateUrl := conf.GetCateUrl(cateEngName)
 		pathExt := path.Ext(cateUrl)
 		page := &models.Page{
 			TotalNum:  ((controllers.GetCateArticleNum(cate.Cid) - 1) / conf.KpageArticleNum) + 1,
