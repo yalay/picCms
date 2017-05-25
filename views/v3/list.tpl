@@ -1,6 +1,6 @@
 {{define "list"}}
 <li class="i_list list_n2">
-	<a href="{{func_articleurl .Id}}" title="{{.Title}}">
+	<a target="_blank" href="{{func_articleurl .Id}}" title="{{.Title}}">
 		<img class="waitpic" src="/img/loading.gif" data-original="{{.Cover}}?s=270x370" width="270" height="370" alt="{{.Remark}}" style="display: inline;">
 	</a>
 	<div class="case_info">
