@@ -36,6 +36,7 @@ func router(adminPath string) {
 	beego.AddFuncMap("func_articles", controllers.GetArticles)
 	beego.AddFuncMap("func_cates", controllers.GetCates)
 	beego.AddFuncMap("func_topics", controllers.GetTopics)
+	beego.AddFuncMap("func_hottags", controllers.GetHotTags)
 	beego.AddFuncMap("func_time", api.TimeFormat)
 	beego.AddFuncMap("func_time2", api.TimeFormat2)
 	beego.AddFuncMap("func_articleurl", conf.GetArticleUrl)

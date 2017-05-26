@@ -178,6 +178,16 @@ func GetArticles(cateId int32, star, count int) []*models.Article {
 	return articles
 }
 
+func GetTopHitsArticles(count int) []*models.Article {
+	if count <= 0 {
+		return nil
+	}
+
+	articles := make([]*models.Article, 0, count)
+	DB.Limit(count).Order("hits desc").Where("status = 1").Find(&articles)
+	return articles
+}
+
 func GetCates() []*models.Cate {
 	var cates = make([]*models.Cate, 0)
 	DB.Order("index").Where("status = 1").Find(&cates)
@@ -317,6 +327,34 @@ func GetTagPageArticles(tag string, pageNum int) []*models.Article {
 	tagArticles := make([]*models.Article, 0, len(tagArticleStrIds))
 	DB.Where("id in (" + strings.Join(tagArticleStrIds, ",") + ")").Find(&tagArticles)
 	return tagArticles
+}
+
+func GetHotTags(count int) []string {
+	topArticles := GetTopHitsArticles(count)
+	if len(topArticles) == 0 {
+		return nil
+	}
+
+	articleIds := make([]string, 0, len(topArticles))
+	for _, topArticle := range topArticles {
+		articleIds = append(articleIds, strconv.Itoa(int(topArticle.Id)))
+	}
+
+	rows, err := DB.Limit(count).Select("tag, count(*) as cnt").Where("id in (" + strings.Join(articleIds, ",") + ")").Order("cnt desc").Group("tag").Rows()
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
+
+	defer rows.Close()
+	var tags = make([]string, 0)
+	for rows.Next() {
+		var tag string
+		var count int
+		rows.Scan(&tag, &count)
+		tags = append(tags, tag)
+	}
+	return tags
 }
 
 func GetTopics() []*models.Topic {

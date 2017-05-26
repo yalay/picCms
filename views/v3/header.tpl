@@ -18,6 +18,13 @@
                                 {{end}}
                             </ul>
                         </li>
+                        <li><a>热门标签</a>
+                            <ul class="sub-menu">
+                                {{range (func_hottags 10)}}
+                                <li><a href="{{func_tagurl .}}">{{.}}</a></li>
+                                {{end}}
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             </ul>
