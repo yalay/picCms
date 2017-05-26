@@ -14,6 +14,7 @@ var AdminServer  http.Handler
 
 func InitAdmin(adminPath string) {
 	Admin = admin.New(&qor.Config{DB: DB})
+	Admin.RegisterViewPath("views/admin")
 	Admin.AddResource(&models.Config{}, &admin.Config{Menu: []string{"系统配置"}})
 
 	Admin.AddResource(&models.Article{}, &admin.Config{Menu: []string{"资源管理"}})
