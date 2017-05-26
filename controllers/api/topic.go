@@ -58,7 +58,6 @@ func (c *TopicController) Get() {
 		c.Data["tContent"] = topic.Content
 		c.Data["tArticles"] = controllers.GetTopicPageArticles(topic.Tid, pageId)
 		c.Data["pagination"] = page.Html()
-		beego.Warn("%+v\n", c.Data)
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 
