@@ -340,7 +340,7 @@ func GetHotTags(count int) []string {
 		articleIds = append(articleIds, strconv.Itoa(int(topArticle.Id)))
 	}
 
-	rows, err := DB.Limit(count).Select("tag, count(*) as cnt").Where("id in (" + strings.Join(articleIds, ",") + ")").Order("cnt desc").Group("tag").Rows()
+	rows, err := DB.Model(&models.Tags{}).Limit(count).Select("tag, count(*) as cnt").Where("article_id in (" + strings.Join(articleIds, ",") + ")").Order("cnt desc").Group("tag").Rows()
 	if err != nil {
 		log.Println(err.Error())
 		return nil
