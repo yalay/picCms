@@ -49,6 +49,8 @@ func InitDb() {
 		&models.Cate{},
 		&models.Tags{},
 		&models.Config{},
+		&models.Topic{},
+		&models.Ad{},
 	)
 }
 
@@ -419,4 +421,12 @@ func GetGconfig(key string) string {
 	}
 	DB.First(config)
 	return config.Value
+}
+
+func GetAdsense(title string) string {
+	adsense := &models.Ad{
+		Title:title,
+	}
+	DB.Where("title = ? AND status = 1", title).First(adsense)
+	return adsense.Content
 }

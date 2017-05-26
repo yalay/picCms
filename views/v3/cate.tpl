@@ -20,6 +20,7 @@
     <div class="update_area">
         <div class="update_area_content">
             <ul class="update_area_lists cl">
+                {{str2html (func_adsense "list-native")}}
                 {{range .cArticles}}
                 {{template "list" .}}
                 {{end}}

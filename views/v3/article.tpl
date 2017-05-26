@@ -57,6 +57,7 @@
                     </span>
                 </div>
                 <ul class="xg_content">
+                    {{str2html (func_adsense "list-native")}}
                     {{range .relates}}
                     {{template "list" .}}
                     {{end}}
