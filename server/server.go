@@ -31,7 +31,7 @@ func router(adminPath string) {
 	beego.SetStaticPath("/js", "views/v3/js")
 	beego.SetStaticPath("/img", "views/v3/img")
 	beego.SetStaticPath("/favicon.ico", "views/v3/img/favicon.ico")
-	beego.SetStaticPath("/rebots.txt", "rebots.txt")
+	beego.SetStaticPath("/robots.txt", "robots.txt")
 
 	beego.AddFuncMap("func_articles", controllers.GetArticles)
 	beego.AddFuncMap("func_cates", controllers.GetCates)
