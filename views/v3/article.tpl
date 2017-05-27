@@ -64,10 +64,7 @@
                 </ul>
                 <section class="single-post-comment">
                     <div class="single-post-comment-reply" id="respond" >
-                        <!-- UY BEGIN -->
-                        <div id="uyan_frame"></div>
-                        <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2099909"></script>
-                        <!-- UY END -->
+                        {{str2html (func_adsense "livere")}}
                     </div>
                 </section>
             </div>
