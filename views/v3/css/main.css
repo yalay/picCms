@@ -3,7 +3,7 @@ body{font-family:"Microsoft Yahei";background:#f0f0f0;margin:0 auto;font-size:14
 *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;padding:0}
 :after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 html{font-size:10px;-webkit-tap-highlight-color:transparent}
-a:focus{outline:thin dotted;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px;text-decoration:none;color:#f66}
+a:focus{outline:5px auto -webkit-focus-ring-color;outline-offset:-2px;text-decoration:none;color:#f66}
 img{border:0;vertical-align:middle}
 button{cursor:pointer}
 .cl{zoom:1}
@@ -210,8 +210,8 @@ hr{margin-top:20px;border:0;border-top:1px solid #eee}
 .single-post-comment .comment-pagenav{display:block;margin-top:20px;text-align:center}
 .single-post-comment .comment-pagenav .page-numbers{padding:5px 10px;font-size:12px;border:1px solid #eaeaea}
 .single-post-comment .comment-pagenav .current{color:#fff;background-color:#f66;border-color:#f66;cursor:default}
-.dtpost-like{text-align:center;display:block;width:200px;margin:0 auto}
-.dtpost-like a{position:relative;display:block;width:80px;height:80px;float:left;margin:0 10px;text-align:center}
+.dtpost-like{text-align:center;display:block;width:240px;margin:0 auto}
+.dtpost-like a{position:relative;display:block;width:60px;height:80px;float:left;margin:0 10px;text-align:center}
 .dtpost-like a i{display:inline-block;text-align:center;height:50px;width:50px;line-height:50px;font-size:1.7em;color:#9f9f9f;border-radius:50%;border:1px solid #DDD}
 .dtpost-like a .count{position:absolute;left:0;bottom:0;width:100%;text-align:center;display:block;color:#000}
 .dtpost-like .favorite i{border-color:#F96E7F;color:#F38787}
@@ -271,7 +271,7 @@ ul.links li a {color: #7D7D7D}
 	.update_area_lists{padding:0 5px}
 	.content_left{padding:10px}
 	.image_div{padding:0}
-	.list_n1,.list_n2,.list_n3{width:48.5%;margin:0 0 10px;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box,padding-bottom: 70px}
+	.list_n1,.list_n2,.list_n3{width:48.5%;margin:0 0 10px;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding-bottom: 70px}
 	.update_area_lists li:nth-child(odd),.xg_content li:nth-child(odd){margin-right:3%}
 	.list_n3{width:-moz-calc(100% - 10px);width:-webkit-calc(100% - 10px);width:calc(100% - 10px);margin:0 5px 10px}
 	.cat_bg .cat_bg_img{background:no-repeat scroll center 0}

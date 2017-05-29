@@ -34,12 +34,10 @@
 
                         <div class="tag cl" style="margin-top:30px;">
                             <span class="dtpost-like cl">
-                                <!-- 点赞功能
-                                <a href="javascript:;" data-action="ding" data-id="{$article.id}" class="favorite">
+                                <a class="favorite ajax_up" href="javascript:;">
                                     <i class="fa fa-thumbs-up"></i>
-                                    <span class="count"><em class="ct_ding" style="color: #F58282;">{$article.up}</em>个赞</span>
+                                    <span class="count"><em class="ct_ding" style="color: #F58282;">{{.up}}</em>个赞</span>
                                 </a>
-                                -->
                                 <a class="share-btn" href="javascript:;" onclick="javascript:userAddFavorite()" title="收藏">
                                     <i class="fa fa-star"></i>
                                     <span class="count">收藏</span>
@@ -70,12 +68,10 @@
             </div>
         </div>
     </div>
-    {{template "footer" .}}
     <script type="text/javascript">
         var articleId = "{{.id}}";
-        var web_script = "/";
-        $.post("/social/{{.id}}/view");
     </script>
+    {{template "footer" .}}
     <script type="text/javascript" src="/js/ajax.js"></script>
     <!-- JiaThis Button BEGIN -->
     <div class="jiathis_share_slide jiathis_share_32x32" id="jiathis_share_slide">

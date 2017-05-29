@@ -1,15 +1,16 @@
 // 移动菜单
 $(function(){
-  	var $bg;
+    var $bg;
     $('#mobile_menu').slicknav({
-	    duplicate: false,
-	    prependTo: '.login_text',
-	    init: function() {
-        	$('.slicknav_menu').css({'background': 'white'});
-        	$('.slicknav_nav a').css({'background': '#fff', 'color': 'red'});
-        	$('.login_text').removeClass('hide');
-	    }
-	});
+        duplicate: false,
+        prependTo: '.login_text',
+        init: function() {
+            $('.slicknav_menu').css({'background': 'white'});
+            $('.slicknav_nav a').css({'background': '#fff', 'color': 'red'});
+            $('.login_text').removeClass('hide');
+        }
+    });
+    $.post("/social/view/"+articleId);
 });
 
 // 滚动到顶端

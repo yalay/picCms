@@ -80,6 +80,7 @@ func (c *ArticleController) Get() {
 		c.Data["cUrl"] = conf.GetCateUrl(cate.EngName)
 		c.Data["file"] = attach.File
 		c.Data["hits"] = article.Hits
+		c.Data["up"] = article.Up
 		c.Data["preUrl"] = page.PreUrl()
 		c.Data["nextUrl"] = page.NextUrl()
 		c.Data["pagination"] = page.Html()

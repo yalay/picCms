@@ -30,7 +30,7 @@ func (c *SocialController) Post() {
 	case kActionTypeView, kActionTypeUp, kActionTypeDown:
 		viewData := c.Ctx.GetCookie(action)
 		if viewData == "" {
-			controllers.IncArticleView(int32(articleIntId))
+			incArticleSocial(action, int32(articleIntId))
 			c.Ctx.SetCookie(action, articleStrId, beego.BConfig.WebConfig.Session.SessionCookieLifeTime)
 		} else {
 			var hasViewed bool
@@ -42,7 +42,7 @@ func (c *SocialController) Post() {
 				}
 			}
 			if !hasViewed {
-				controllers.IncArticleView(int32(articleIntId))
+				incArticleSocial(action, int32(articleIntId))
 				viewData += "," + articleStrId
 				c.Ctx.SetCookie(action, viewData, beego.BConfig.WebConfig.Session.SessionCookieLifeTime)
 			}
@@ -52,3 +52,15 @@ func (c *SocialController) Post() {
 	}
 	c.Ctx.WriteString("OK")
 }
+
+func incArticleSocial(action string, articleId int32) {
+	switch action {
+	case kActionTypeView:
+		controllers.IncArticleView(articleId)
+	case kActionTypeUp:
+		controllers.IncArticleUp(articleId)
+	case kActionTypeDown:
+		controllers.IncArticleDown(articleId)
+	}
+}
+
