@@ -51,6 +51,7 @@ func InitDb() {
 		&models.Config{},
 		&models.Topic{},
 		&models.Ad{},
+		&models.Lang{},
 	)
 }
 
@@ -429,4 +430,17 @@ func GetAdsense(title string) string {
 	}
 	DB.Where("title = ? AND status = 1", title).First(adsense)
 	return adsense.Content
+}
+
+func GetEngLang(text string, langType string) string {
+	if langType != "en" {
+		return text
+	}
+
+	var lang = &models.Lang{}
+	DB.Where("zh = ?", text).First(lang)
+	if lang.Eng == "" {
+		return text
+	}
+	return lang.Eng
 }

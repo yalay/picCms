@@ -29,7 +29,9 @@ func (c *TopicController) Get() {
 		pageId = 1
 	}
 
-	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixTopic, topicEngName, pageStrId)
+	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
+	curLang = "en"
+	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixTopic, topicEngName, pageStrId, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
@@ -42,22 +44,23 @@ func (c *TopicController) Get() {
 			UrlPrefix: strings.TrimSuffix(topicUrl, pathExt),
 			UrlSuffix: pathExt,
 		}
-		c.Data["webName"] = controllers.GetGconfig("web_name")
-		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
-		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
+		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
+		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = 90
 		c.Data["tid"] = topic.Tid
 		c.Data["pageId"] = pageId
-		c.Data["tName"] = topic.Name
-		c.Data["tTitle"] = topic.Stitle
+		c.Data["tName"] = controllers.Translate(topic.Name, curLang)
+		c.Data["tTitle"] = controllers.Translate(topic.Stitle, curLang)
 		c.Data["tCover"] = topic.Cover
-		c.Data["tKeywords"] = topic.Skeywords
-		c.Data["tDesc"] = topic.Sdescription
-		c.Data["tContent"] = topic.Content
+		c.Data["tKeywords"] = controllers.Translate(topic.Skeywords, curLang)
+		c.Data["tDesc"] = controllers.Translate(topic.Sdescription, curLang)
+		c.Data["tContent"] = controllers.Translate(topic.Content, curLang)
 		c.Data["tArticles"] = controllers.GetTopicPageArticles(topic.Tid, pageId)
 		c.Data["pagination"] = page.Html()
+		c.Data["lang"] = curLang
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 

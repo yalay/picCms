@@ -18,6 +18,7 @@ const (
 	KcachePrefixCate    = "@c"
 	KcachePrefixTag     = "@t"
 	KcachePrefixTopic   = "@o"
+	KcachePrefixLang    = "@l"
 )
 
 type Memory struct {

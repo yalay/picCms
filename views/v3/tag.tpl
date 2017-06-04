@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{.lang}}">
 <head>
     {{template "top"}}
     <title>关于{{.tag}}的图片 - {{.webName}}</title>
@@ -25,7 +25,7 @@
                 {{end}}
             </ul>
             <nav class="navigation pagination" role="navigation">
-                <h2 class="screen-reader-text">文章导航</h2>
+                <h2 class="screen-reader-text">{{func_lang "文章导航" .lang}}</h2>
                 <div class="nav-links">{{if .pagination}}{{str2html .pagination}}{{end}}</div>
             </nav>
         </div>

@@ -1,34 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{.lang}}">
 <head>
     {{template "top"}}
     <title>{{.title}} - {{.keywords}}</title>
     <meta name="keywords" content="{{.keywords}}">
+    <meta name="description" content="{{.title}} - {{.keywords}}">
 </head>
-<body class="home blog body_top" youdao="bind">
+<body class="home blog body_top">
     {{template "header" .}}
     <div class="main">
         <div class="main_inner">
             <div class="main_left" style="width:100%">
                 <div class="item_title">
-                    <h1> {{.title}}(缩略图<span>{{.pageId}} / {{.attachNum}}</span>)</h1>
-                    <div class="single-cat"><span>分类:</span> <a href="{{.cUrl}}" rel="category tag">{{.cName}}</a> / <span>发布于</span>{{.pubDate}}</div>
+                    <h1> {{.title}} (<span>{{.pageId}} / {{.attachNum}}</span>)</h1>
+                    <div class="single-cat"><span>{{func_lang "分类" .lang}}: </span> <a href="{{.cUrl}}" rel="category tag">{{.cName}}</a> / <span>{{func_lang "发布于" .lang}} </span>{{.pubDate}}</div>
                 </div>
                 <div class="item_info cl">
                     <div style="float:left;">
-                        <i class="fa fa-eye"></i> <span class="cx-views">{{.hits}}</span> 人气 /
-                        <i class="fa fa-comment"></i> <span><a href="#respond">参与</a></span> 评论
+                        <i class="fa fa-eye"></i> <span class="cx-views">{{.hits}}</span> {{func_lang "人气" .lang}} /
+                        <i class="fa fa-comment"></i> <span><a href="#respond">{{func_lang "参与" .lang}}</a></span> {{func_lang "评论" .lang}}
                     </div>
                     <div class="post_au">
-                        <a style="margin-right:15px;color: #2CCBE6;" class="ajax ajax_dl_attachs" href="#"><i class="fa fa-download" style="margin-right:3px;"></i>免费下载高清原图</a>
+                        <a style="margin-right:15px;color: #2CCBE6;" class="ajax ajax_dl_attachs" href="#"><i class="fa fa-download" style="margin-right:3px;"></i>{{func_lang "免费下载高清原图" .lang}}</a>
                     </div>
                 </div>
                 <div class="content" id="content">
                     <div class="content_left">
-                        <a href="{{.preUrl}}" title="上一页" class="pre-cat"><i class="fa fa-chevron-left"></i></a>
-                        <a href="{{.nextUrl}}" title="下一页" class="next-cat"><i class="fa fa-chevron-right"></i></a>
+                        <a href="{{.preUrl}}" title='{{func_lang "上一页" .lang}}' class="pre-cat"><i class="fa fa-chevron-left"></i></a>
+                        <a href="{{.nextUrl}}" title='{{func_lang "下一页" .lang}}' class="next-cat"><i class="fa fa-chevron-right"></i></a>
                         <div class="image_div" id="image_div">
-                            <p><a href="{{.nextUrl}}"><img src="{{.file}}" alt="{{.title}}" title="点击图片查看下一张"></a></p>
+                            <p><a href="{{.nextUrl}}"><img src="{{.file}}" alt="{{.title}}" title='{{func_lang "点击图片查看下一张" .lang}}'></a></p>
                             <div class="nav-links page_imges">{{if .pagination}}{{str2html .pagination}}{{end}}</div>
                         </div>
 
@@ -36,18 +37,18 @@
                             <span class="dtpost-like cl">
                                 <a class="favorite ajax_up" href="javascript:;">
                                     <i class="fa fa-thumbs-up"></i>
-                                    <span class="count"><em class="ct_ding" style="color: #F58282;">{{.up}}</em>个赞</span>
+                                    <span class="count"><em class="ct_ding" style="color: #F58282;">{{.up}}</em>{{func_lang "个赞" .lang}}</span>
                                 </a>
-                                <a class="share-btn" href="javascript:;" onclick="javascript:userAddFavorite()" title="收藏">
+                                <a class="share-btn" href="javascript:;" onclick="javascript:userAddFavorite()" title='{{func_lang "收藏" .lang}}'>
                                     <i class="fa fa-star"></i>
-                                    <span class="count">收藏</span>
+                                    <span class="count">{{func_lang "收藏" .lang}}</span>
                                 </a>
-                                <a class="share-down ajax_dl_attachs" href="#"><i class="fa fa-download"></i><span class="count">下载原图</span></a>
+                                <a class="share-down ajax_dl_attachs" href="#"><i class="fa fa-download"></i><span class="count">{{func_lang "下载" .lang}}</span></a>
                             </span>
                         </div>
                     </div>
                 </div>
-                <div class="content_right_title">相关资源：
+                <div class="content_right_title">{{func_lang "相关资源" .lang}}：
                     <span class="single-tags">
                     {{range .tags}}
                     <a href="{{func_tagurl .}}">{{.}} </a>
@@ -78,10 +79,10 @@
     <div class="jiathis_share_slide_top" id="jiathis_share_title"></div>
     <div class="jiathis_share_slide_inner">
     <div class="jiathis_style_32x32">
-    <a class="jiathis_button_qzone"></a>
+    <a class="jiathis_button_weixin"></a>
     <a class="jiathis_button_tsina"></a>
     <a class="jiathis_button_tqq"></a>
-    <a class="jiathis_button_weixin"></a>
+    <a class="jiathis_button_qzone"></a>
     <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
     <script type="text/javascript">
     var jiathis_config = {data_track_clickback:'true'

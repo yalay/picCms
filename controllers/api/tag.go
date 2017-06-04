@@ -19,7 +19,9 @@ func (c *TagController) Get() {
 	tag := c.Ctx.Input.Param(":tag")
 	pageStrId := c.Ctx.Input.Param(":page")
 
-	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixTag, tag, pageStrId)
+	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
+	curLang = "en"
+	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixTag, tag, pageStrId, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
@@ -37,16 +39,17 @@ func (c *TagController) Get() {
 			UrlPrefix: strings.TrimSuffix(tagUrl, pathExt),
 			UrlSuffix: pathExt,
 		}
-		c.Data["webName"] = controllers.GetGconfig("web_name")
-		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
-		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
+		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
+		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = int32(0)
-		c.Data["tag"] = tag
+		c.Data["tag"] = controllers.Translate(tag, curLang)
 		c.Data["pageId"] = pageId
 		c.Data["tArticles"] = controllers.GetTagPageArticles(tag, pageId)
 		c.Data["pagination"] = page.Html()
+		c.Data["lang"] = curLang
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 

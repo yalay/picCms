@@ -48,7 +48,9 @@ func (c *ArticleController) Get() {
 		return
 	}
 
-	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixArticle, articleStrId, pageStrId)
+	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
+	curLang = "en"
+	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixArticle, articleStrId, pageStrId, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
@@ -63,20 +65,21 @@ func (c *ArticleController) Get() {
 			UrlSuffix: pathExt,
 		}
 
-		c.Data["webName"] = controllers.GetGconfig("web_name")
-		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
-		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
+		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
+		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
-		c.Data["title"] = article.Title
+		c.Data["title"] = controllers.Translate(article.Title, curLang)
+		c.Data["keywords"] = controllers.Translate(article.Keywords, curLang)
 		c.Data["id"] = articleId
 		c.Data["pubDate"] = TimeFormat(article.Addtime)
 		c.Data["attachNum"] = attachNum
 		c.Data["pageId"] = pageId
-		c.Data["cName"] = cate.Name
+		c.Data["cName"] = controllers.Translate(cate.Name, curLang)
 		c.Data["cid"] = cate.Cid
-		c.Data["cKeywords"] = cate.Ckeywords
-		c.Data["cDesc"] = cate.Cdescription
+		c.Data["cKeywords"] = controllers.Translate(cate.Ckeywords, curLang)
+		c.Data["cDesc"] = controllers.Translate(cate.Cdescription, curLang)
 		c.Data["cUrl"] = conf.GetCateUrl(cate.EngName)
 		c.Data["file"] = attach.File
 		c.Data["hits"] = article.Hits
@@ -86,8 +89,8 @@ func (c *ArticleController) Get() {
 		c.Data["pagination"] = page.Html()
 		c.Data["relates"] = controllers.GetRelatedArticles(articleId , 9)
 		c.Data["tags"] = controllers.GetArticleTags(articleId)
+		c.Data["lang"] = curLang
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
-
 	c.TplName = "article.tpl"
 }

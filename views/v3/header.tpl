@@ -5,20 +5,20 @@
         <div class="logo"><a href="{{.webUrl}}"><img src="/img/logo.png" alt="{{.webName}}"></a></div>
         <div class="header_menu">
             <ul>
-                <li {{if eq $.cid 0}} class="current-menu-item"{{end}}><a href="/">网站首页</a></li>
+                <li {{if eq $.cid 0}} class="current-menu-item"{{end}}><a href="/">{{func_lang "网站首页" .lang}}</a></li>
                 {{range func_cates}}
-                <li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .EngName}}">{{.Name}}</a></li>
+                <li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .EngName}}">{{func_lang .Name $.lang}}</a></li>
                 {{end}}
-                <li class="megamenu toke {{if eq $.cid 90}} current-menu-ancestor{{end}}"><a>精品专题</a>
+                <li class="megamenu toke {{if eq $.cid 90}} current-menu-ancestor{{end}}"><a>{{func_lang "精品专题" .lang}}</a>
                     <ul class="sub-menu">
-                        <li><a>人气模特</a>
+                        <li><a>{{func_lang "人气模特" .lang}}</a>
                             <ul class="sub-menu">
                                 {{range func_topics}}
                                 <li><a href="{{func_topicurl .EngName}}">{{.Name}}</a></li>
                                 {{end}}
                             </ul>
                         </li>
-                        <li><a>热门标签</a>
+                        <li><a>{{func_lang "热门标签" .lang}}</a>
                             <ul class="sub-menu">
                                 {{range (func_hottags 10)}}
                                 <li><a href="{{func_tagurl .}}">{{.}}</a></li>
@@ -31,9 +31,9 @@
         </div>
         <div class="login_text hide">
             <ul id="mobile_menu">
-            <li {{if eq $.cid 0}} class="current-menu-item"{{end}}><a href="{{.webUrl}}">网站首页</a></li>
+            <li {{if eq $.cid 0}} class="current-menu-item"{{end}}><a href="{{.webUrl}}">{{func_lang "网站首页" .lang}}</a></li>
             {{range func_cates}}
-            <li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .EngName}}">{{.Name}}</a></li>
+            <li {{if eq $.cid .Cid}} class="current-menu-item"{{end}}><a href="{{func_cateurl .EngName}}">{{func_lang .Name $.lang}}</a></li>
             {{end}}
         </div>
     </div>

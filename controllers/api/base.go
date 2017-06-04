@@ -1,6 +1,9 @@
 package api
 
-import "time"
+import (
+	"time"
+	"strings"
+)
 
 const (
 	kTimeLayout  = "2006-01-02 15:04:05"
@@ -15,4 +18,14 @@ func TimeFormat(ts int64) string {
 func TimeFormat2(ts int64) string {
 	curTime := time.Unix(ts, 0)
 	return curTime.Format(kTimeLayout2)
+}
+
+func GetLang(headerLang string) string {
+	if headerLang == "" {
+		return "zh"
+	}
+	if strings.HasPrefix(headerLang, "en") {
+		return "en"
+	}
+	return "zh"
 }

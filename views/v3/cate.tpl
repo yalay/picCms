@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{.lang}}">
 <head>
     {{template "top"}}
     <title>{{.cName}} - {{.cKeywords}}</title>
     <meta name="keywords" content="{{.cKeywords}}">
     <meta name="description" content="{{.cDesc}}">
 </head>
-<body class="home blog body_top" youdao="bind">
+<body class="home blog body_top">
     {{template "header" .}}
     <div class="cat_bg">
         <div class="cat_bg_img" style="background-image:url(/img/cate_{{.cid}}.png);">
@@ -26,7 +26,7 @@
                 {{end}}
             </ul>
             <nav class="navigation pagination" role="navigation">
-                <h2 class="screen-reader-text">文章导航</h2>
+                <h2 class="screen-reader-text">{{func_lang "文章导航" .lang}}</h2>
                 <div class="nav-links">{{if .pagination}}{{str2html .pagination}}{{end}}</div>
             </nav>
         </div>

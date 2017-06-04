@@ -44,6 +44,7 @@ func router(adminPath string) {
 	beego.AddFuncMap("func_cateurl", conf.GetCateUrl)
 	beego.AddFuncMap("func_tagurl", conf.GetTagUrl)
 	beego.AddFuncMap("func_topicurl", conf.GetTopicUrl)
+	beego.AddFuncMap("func_lang", controllers.Translate)
 
 	// 后台面板路由注册
 	beego.Get(adminPath, controllers.AdminHandler)

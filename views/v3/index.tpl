@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{.lang}}">
 <head>
     {{template "top"}}
     <title>{{.webName}} - {{.webKeywords}}</title>
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/bxslider/4.2.12/jquery.bxslider.min.css" type="text/css" media="all">
     <link rel="stylesheet" href="/css/backtotop.css" type="text/css" media="all">
 </head>
-<body class="home blog body_top" youdao="bind">
+<body class="home blog body_top">
     {{template "header" .}}
     <!--效果html开始-->
     <div class="site-wrap hide">
@@ -21,10 +21,10 @@
     {{range func_cates}}
         <div class="home-filter">
             <div class="h-screen-wrap">
-                <ul class="h-screen"><li class="current-menu-item"><a href="{{func_cateurl .EngName}}"> {{.Name}} </a></li></ul>
+                <ul class="h-screen"><li class="current-menu-item"><a href="{{func_cateurl .EngName}}"> {{func_lang .Name $.lang}} </a></li></ul>
             </div>
             <ul class="h-soup cl">
-                <li class="open"><i class="fa fa-coffee"></i><a href="{{func_cateurl .EngName}}" title="{{.Name}}">  查看更多 </a></li>
+                <li class="open"><i class="fa fa-coffee"></i><a href="{{func_cateurl .EngName}}" title="{{func_lang .Name $.lang}}">  {{func_lang "查看更多" $.lang}} </a></li>
             </ul>
         </div>
         <div class="update_area">

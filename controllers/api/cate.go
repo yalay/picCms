@@ -29,7 +29,9 @@ func (c *CateController) Get() {
 		pageId = 1
 	}
 
-	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixCate, cateEngName, pageStrId)
+	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
+	curLang = "en"
+	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixCate, cateEngName, pageStrId, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
@@ -42,18 +44,19 @@ func (c *CateController) Get() {
 			UrlPrefix: strings.TrimSuffix(cateUrl, pathExt),
 			UrlSuffix: pathExt,
 		}
-		c.Data["webName"] = controllers.GetGconfig("web_name")
-		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
-		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
+		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
+		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = cate.Cid
 		c.Data["pageId"] = pageId
-		c.Data["cName"] = cate.Name
-		c.Data["cKeywords"] = cate.Ckeywords
-		c.Data["cDesc"] = cate.Cdescription
+		c.Data["cName"] = controllers.Translate(cate.Name, curLang)
+		c.Data["cKeywords"] = controllers.Translate(cate.Ckeywords, curLang)
+		c.Data["cDesc"] = controllers.Translate(cate.Cdescription, curLang)
 		c.Data["cArticles"] = controllers.GetCatePageArticles(cate.Cid, pageId)
 		c.Data["pagination"] = page.Html()
+		c.Data["lang"] = curLang
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 

@@ -10,16 +10,19 @@ type HomeController struct {
 }
 
 func (c *HomeController) Get() {
-	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixHome)
+	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
+	curLang = "en"
+	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixHome, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
 	} else {
 		c.Data["cid"] = int32(0)
-		c.Data["webName"] = controllers.GetGconfig("web_name")
-		c.Data["webKeywords"] = controllers.GetGconfig("web_keywords")
-		c.Data["webDesc"] = controllers.GetGconfig("web_description")
+		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
+		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
+		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
+		c.Data["lang"] = curLang
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 
