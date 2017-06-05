@@ -58,7 +58,11 @@
                 <ul class="xg_content">
                     {{str2html (func_adsense "list-native")}}
                     {{range .relates}}
-                    {{template "list" .}}
+                        {{if eq $.lang "zh"}}
+                        {{template "list.zh" .}}
+                        {{else}}
+                        {{template "list.en" .}}
+                        {{end}}
                     {{end}}
                 </ul>
                 <section class="single-post-comment">

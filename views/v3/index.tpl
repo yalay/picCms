@@ -31,7 +31,11 @@
             <div class="update_area_content">
                 <ul class="update_area_lists cl">
                     {{range (func_articles .Cid 0 5)}}
-                    {{template "list" .}}
+                        {{if eq $.lang "zh"}}
+                        {{template "list.zh" .}}
+                        {{else}}
+                        {{template "list.en" .}}
+                        {{end}}
                     {{end}}
                 </ul>
             </div>

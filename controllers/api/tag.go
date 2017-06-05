@@ -9,6 +9,7 @@ import (
 
 	"controllers"
 	"github.com/astaxie/beego"
+	"fmt"
 )
 
 type TagController struct {
@@ -39,13 +40,17 @@ func (c *TagController) Get() {
 			UrlPrefix: strings.TrimSuffix(tagUrl, pathExt),
 			UrlSuffix: pathExt,
 		}
+		transTag := controllers.Translate(tag, curLang)
 		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
 		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
 		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = int32(0)
-		c.Data["tag"] = controllers.Translate(tag, curLang)
+		c.Data["tag"] = transTag
+		c.Data["tTitle"] = fmt.Sprintf("%s %s",
+			transTag,
+			controllers.Translate("相关的高清美眉大图", curLang))
 		c.Data["pageId"] = pageId
 		c.Data["tArticles"] = controllers.GetTagPageArticles(tag, pageId)
 		c.Data["pagination"] = page.Html()

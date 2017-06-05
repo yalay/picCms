@@ -21,7 +21,11 @@
         <div class="update_area_content">
             <ul class="update_area_lists cl">
                 {{range .tArticles}}
-                {{template "list" .}}
+                    {{if eq $.lang "zh"}}
+                    {{template "list.zh" .}}
+                    {{else}}
+                    {{template "list.en" .}}
+                    {{end}}
                 {{end}}
             </ul>
             <nav class="navigation pagination" role="navigation">

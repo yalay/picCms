@@ -22,7 +22,11 @@
             <ul class="update_area_lists cl">
                 {{str2html (func_adsense "list-native")}}
                 {{range .cArticles}}
-                {{template "list" .}}
+                    {{if eq $.lang "zh"}}
+                    {{template "list.zh" .}}
+                    {{else}}
+                    {{template "list.en" .}}
+                    {{end}}
                 {{end}}
             </ul>
             <nav class="navigation pagination" role="navigation">
