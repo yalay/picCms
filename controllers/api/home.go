@@ -11,7 +11,6 @@ type HomeController struct {
 
 func (c *HomeController) Get() {
 	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
-	curLang = "en"
 	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixHome, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})

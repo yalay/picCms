@@ -4,9 +4,11 @@ import (
 	"conf"
 	"controllers"
 	"controllers/api"
+	"net/http"
+	"strings"
 
 	"github.com/astaxie/beego"
-	"strings"
+	"github.com/astaxie/beego/context"
 )
 
 func router(adminPath string) {
@@ -52,10 +54,14 @@ func router(adminPath string) {
 	beego.Get(adminPath+"/*sub", controllers.AdminHandler)
 	beego.Post(adminPath+"/*sub", controllers.AdminHandler)
 
-	// 兼容旧文章页链接
-	beego.Router("/index.:suffix(php|html|htm)", &api.HomeController{})
-	beego.Router("/html/:engname("+cateEngNamesExp+")/:id([0-9]+).html", &api.ArticleController{})
-	beego.Router("/html/:engname("+cateEngNamesExp+")/:id([0-9]+)-:page([0-9]+).html", &api.ArticleController{})
+	// 兼容旧文章页链接，采用301跳转，seo友好
+	beego.Get("/index.:suffix(php|html|htm)", func(c *context.Context) {
+		c.Redirect(http.StatusMovedPermanently, c.Input.Site())
+	})
+	beego.Get("/html/:engname("+cateEngNamesExp+")/:id([\\d-]+).html", func(c *context.Context) {
+		articleStrId := c.Input.Param(":id")
+		c.Redirect(http.StatusMovedPermanently, c.Input.Site()+conf.GetArticlePageUrl(articleStrId))
+	})
 }
 
 func Run(adminPath string) {
