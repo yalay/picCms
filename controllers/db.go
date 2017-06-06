@@ -460,3 +460,14 @@ func GetChtLang(text string) string {
 	}
 	return lang.Zht
 }
+
+func InsertLang(text, chtText, engText string) {
+	var count int
+	DB.Model(&models.Lang{}).Where("zh = ?", text).Count(&count)
+	if count == 0 {
+		DB.Model(&models.Lang{}).Create(&models.Lang{Zh: text, Zht: chtText, Eng: engText})
+	} else {
+		// For below Update, nothing will be updated as "", 0, false are blank values of their types
+		DB.Model(&models.Lang{}).Where("zh = ?", text).Update(models.Lang{Zht: chtText, Eng: engText})
+	}
+}

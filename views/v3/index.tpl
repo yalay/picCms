@@ -31,11 +31,16 @@
             <div class="update_area_content">
                 <ul class="update_area_lists cl">
                     {{range (func_articles .Cid 0 5)}}
-                        {{if eq $.lang "zh"}}
-                        {{template "list.zh" .}}
-                        {{else}}
-                        {{template "list.en" .}}
-                        {{end}}
+                    <li class="i_list list_n2">
+                        <a target="_blank" href="{{func_articleurl .Id}}" title='{{func_lang .Title $.lang}}'>
+                            <img class="waitpic" src="/img/loading.gif" data-original="{{.Cover}}?s=270x370" width="270" height="370" alt='{{func_lang .Remark $.lang}}' style="display: inline;">
+                        </a>
+                        <div class="case_info">
+                            <div class="meta-title"> {{func_lang .Title $.lang}} </div>
+                            <div class="meta-post"><i class="fa fa-clock-o"></i> {{func_time2 .Addtime}} <span class="cx_like"><i class="fa fa-heart"></i> {{.Up}} </span></div>
+                        </div>
+                        <div class="meta_zan xl_1"><i class="fa fa-eye"></i> {{.Hits}} </div>
+                    </li>
                     {{end}}
                 </ul>
             </div>
