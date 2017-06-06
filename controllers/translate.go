@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"conf"
 )
 
 const apiKey = "trnsl.1.1.20170604T030854Z.e1cac9fc98790241.b0defc0c4b712d7bde91e5d2a7621534cfaf3b23"
@@ -19,7 +20,7 @@ type rspMsg struct {
 }
 
 func Translate(text, langType string) string {
-	if langType != "en" {
+	if langType == conf.KlangTypeCn {
 		return text
 	}
 
@@ -27,43 +28,59 @@ func Translate(text, langType string) string {
 	if cacheData, err := CACHE.Get(cacheKey); err == nil {
 		return cacheData.(string)
 	}else {
-		var engText string
+		var transText string
 		textFields := strings.Split(text, ",")
 		if len(textFields) == 1 {
-			engText = GetEngLang(text, langType)
+			transText = GetLang(text, langType)
 		} else {
 			var engTexts = make([]string, 0, len(textFields))
 			for _, textField := range textFields {
-				engTextField := GetEngLang(textField, langType)
+				engTextField := GetLang(textField, langType)
 				if engTextField == "" {
 					continue
 				}
 				engTexts = append(engTexts, engTextField)
 			}
-			engText =strings.Join(engTexts, ",")
+			transText =strings.Join(engTexts, ",")
 		}
-		if engText == "" {
+		if transText == "" {
 			return text
 		}
 
-		CACHE.Set(cacheKey, engText)
-		return engText
+		CACHE.Set(cacheKey, transText)
+		return transText
 	}
 }
 
+// 转换到繁体
+func TranslateToCht(text string) (string, error) {
+	baseUrl := "http://opencc.byvoid.com/convert"
+	queryParam := url.Values{}
+	queryParam.Set("text", text)
+	queryParam.Set("config", "s2twp.json")
+	queryParam.Set("precise", "0")
+	resp, err := http.PostForm(baseUrl, queryParam)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
+// 转换到英文
 func TranslateToEng(text string) (string, error) {
 	baseUrl := "https://translate.yandex.net/api/v1.5/tr.json/translate?"
 	queryParam := url.Values{}
 	queryParam.Set("key", apiKey)
 	queryParam.Set("text", text)
 	queryParam.Set("lang", "zh-en")
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", baseUrl+queryParam.Encode(), nil)
-	if err != nil {
-		return "", err
-	}
 
-	resp, err := client.Do(req)
+	resp, err := http.Get(baseUrl+queryParam.Encode())
 	if err != nil {
 		return "", err
 	}

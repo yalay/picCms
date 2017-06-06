@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"conf"
 	"database/sql"
+	"fmt"
 	"log"
 	"models"
 	"strconv"
@@ -13,7 +14,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
 
-	"fmt"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
@@ -426,21 +426,37 @@ func GetGconfig(key string) string {
 
 func GetAdsense(title string) string {
 	adsense := &models.Ad{
-		Title:title,
+		Title: title,
 	}
 	DB.Where("title = ? AND status = 1", title).First(adsense)
 	return adsense.Content
 }
 
-func GetEngLang(text string, langType string) string {
-	if langType != "en" {
+func GetLang(text string, langType string) string {
+	switch langType {
+	case conf.KlangTypeHK, conf.KlangTypeTW:
+		return GetChtLang(text)
+	case conf.KlangTypeEn:
+		return GetEngLang(text)
+	default:
 		return text
 	}
+}
 
+func GetEngLang(text string) string {
 	var lang = &models.Lang{}
 	DB.Where("zh = ?", text).First(lang)
 	if lang.Eng == "" {
 		return text
 	}
 	return lang.Eng
+}
+
+func GetChtLang(text string) string {
+	var lang = &models.Lang{}
+	DB.Where("zh = ?", text).First(lang)
+	if lang.Zht == "" {
+		return text
+	}
+	return lang.Zht
 }

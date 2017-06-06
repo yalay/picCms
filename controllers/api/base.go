@@ -3,6 +3,7 @@ package api
 import (
 	"time"
 	"strings"
+	"conf"
 )
 
 const (
@@ -22,10 +23,22 @@ func TimeFormat2(ts int64) string {
 
 func GetLang(headerLang string) string {
 	if headerLang == "" {
-		return "zh"
+		return conf.KlangTypeCn
 	}
-	if strings.HasPrefix(headerLang, "en") {
-		return "en"
+
+	lowerLang := strings.ToLower(headerLang)
+	switch {
+	case strings.HasPrefix(lowerLang, "en"):
+		return conf.KlangTypeEn
+	case strings.HasPrefix(lowerLang, "zh-tw"):
+		return conf.KlangTypeTW
+	case strings.HasPrefix(lowerLang, "zh-hk"):
+		return conf.KlangTypeHK
+	default:
+		if strings.Contains(lowerLang, "zh") {
+			return conf.KlangTypeCn
+		} else {
+			return conf.KlangTypeEn
+		}
 	}
-	return "zh"
 }

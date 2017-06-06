@@ -49,7 +49,6 @@ func (c *ArticleController) Get() {
 	}
 
 	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
-	curLang = "en"
 	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixArticle, articleStrId, pageStrId, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})

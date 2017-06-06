@@ -21,7 +21,6 @@ func (c *TagController) Get() {
 	pageStrId := c.Ctx.Input.Param(":page")
 
 	curLang := GetLang(c.Ctx.Input.Header("Accept-Language"))
-	curLang = "en"
 	cacheKey := controllers.MakeCacheKey(controllers.KcachePrefixTag, tag, pageStrId, curLang)
 	if cacheData, err := controllers.CACHE.Get(cacheKey); err == nil {
 		c.Data = cacheData.(map[interface{}]interface{})
