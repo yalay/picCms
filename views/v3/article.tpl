@@ -51,7 +51,7 @@
                 <div class="content_right_title">{{func_lang "相关资源" .lang}}：
                     <span class="single-tags">
                     {{range .tags}}
-                    <a href="{{func_tagurl .}}">{{.}} </a>
+                    <a href="{{func_tagurl .}}">{{func_lang . $.lang}} </a>
                     {{end}}
                     </span>
                 </div>
