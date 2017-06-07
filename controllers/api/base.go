@@ -1,9 +1,9 @@
 package api
 
 import (
-	"time"
-	"strings"
 	"conf"
+	"strings"
+	"time"
 )
 
 const (
@@ -32,7 +32,9 @@ func GetLang(headerLang string) string {
 		return conf.KlangTypeEn
 	case strings.HasPrefix(lowerLang, "zh-tw"):
 		return conf.KlangTypeTW
-	case strings.HasPrefix(lowerLang, "zh-hk"):
+	case strings.HasPrefix(lowerLang, "zh-hk") ||
+		strings.HasPrefix(lowerLang, "zh-mo") ||
+		strings.HasPrefix(lowerLang, "zh-hant"):
 		return conf.KlangTypeHK
 	default:
 		if strings.Contains(lowerLang, "zh") {

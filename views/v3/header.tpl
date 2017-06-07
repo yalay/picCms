@@ -14,14 +14,14 @@
                         <li><a>{{func_lang "人气模特" .lang}}</a>
                             <ul class="sub-menu">
                                 {{range func_topics}}
-                                <li><a href="{{func_topicurl .EngName}}">{{.Name}}</a></li>
+                                <li><a href="{{func_topicurl .EngName}}">{{func_lang .Name $.lang}}</a></li>
                                 {{end}}
                             </ul>
                         </li>
                         <li><a>{{func_lang "热门标签" .lang}}</a>
                             <ul class="sub-menu">
                                 {{range (func_hottags 10)}}
-                                <li><a href="{{func_tagurl .}}">{{.}}</a></li>
+                                <li><a href="{{func_tagurl .}}">{{func_lang . $.lang}}</a></li>
                                 {{end}}
                             </ul>
                         </li>
