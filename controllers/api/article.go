@@ -66,7 +66,7 @@ func (c *ArticleController) Get() {
 
 		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
 		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
-		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
+		c.Data["webDesc"] = controllers.TranslateLongText(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["title"] = controllers.Translate(article.Title, curLang)
@@ -78,7 +78,7 @@ func (c *ArticleController) Get() {
 		c.Data["cName"] = controllers.Translate(cate.Name, curLang)
 		c.Data["cid"] = cate.Cid
 		c.Data["cKeywords"] = controllers.Translate(cate.Ckeywords, curLang)
-		c.Data["cDesc"] = controllers.Translate(cate.Cdescription, curLang)
+		c.Data["cDesc"] = controllers.TranslateLongText(cate.Cdescription, curLang)
 		c.Data["cUrl"] = conf.GetCateUrl(cate.EngName)
 		c.Data["file"] = attach.File
 		c.Data["hits"] = article.Hits

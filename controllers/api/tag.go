@@ -42,7 +42,7 @@ func (c *TagController) Get() {
 		transTag := controllers.Translate(tag, curLang)
 		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
 		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
-		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
+		c.Data["webDesc"] = controllers.TranslateLongText(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = int32(0)

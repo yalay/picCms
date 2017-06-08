@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"bytes"
 	"conf"
 	"database/sql"
 	"fmt"
@@ -106,25 +105,16 @@ func GetArticlesByTags(tags []string, limit, offset int) []*models.Article {
 		return nil
 	}
 
-	tagsSql := bytes.NewBufferString("")
-	for i, tag := range tags {
-		if i == 0 {
-			tagsSql.WriteString(`"` + tag + `"`)
-		} else {
-			tagsSql.WriteString(`,"` + tag + `"`)
-		}
-	}
-
 	var rows *sql.Rows
 	var err error
 	if limit == 0 {
 		if offset == 0 {
-			rows, err = DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+			rows, err = DB.Model(&models.Tags{}).Select("article_id, count(*) as cnt").Where("tag in (?)", tags).Order("cnt desc").Group("article_id").Rows()
 		} else {
-			rows, err = DB.Model(&models.Tags{}).Offset(offset).Limit(-1).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+			rows, err = DB.Model(&models.Tags{}).Offset(offset).Limit(-1).Select("article_id, count(*) as cnt").Where("tag in (?)", tags).Order("cnt desc").Group("article_id").Rows()
 		}
 	} else {
-		rows, err = DB.Model(&models.Tags{}).Offset(offset).Limit(limit).Select("article_id, count(*) as cnt").Where("tag in (" + tagsSql.String() + ")").Order("cnt desc").Group("article_id").Rows()
+		rows, err = DB.Model(&models.Tags{}).Offset(offset).Limit(limit).Select("article_id, count(*) as cnt").Where("tag in (?)", tags).Order("cnt desc").Group("article_id").Rows()
 	}
 	if err != nil {
 		log.Println(err.Error())
@@ -144,7 +134,7 @@ func GetArticlesByTags(tags []string, limit, offset int) []*models.Article {
 	}
 
 	tagArticles := make([]*models.Article, 0, len(tagArticleIds))
-	DB.Where("id in (" + strings.Join(tagArticleIds, ",") + ")").Find(&tagArticles)
+	DB.Where("id in (?)", tagArticleIds).Find(&tagArticles)
 	return tagArticles
 }
 
@@ -328,7 +318,7 @@ func GetTagPageArticles(tag string, pageNum int) []*models.Article {
 	}
 
 	tagArticles := make([]*models.Article, 0, len(tagArticleStrIds))
-	DB.Where("id in (" + strings.Join(tagArticleStrIds, ",") + ")").Find(&tagArticles)
+	DB.Where("id in (?)", tagArticleStrIds).Find(&tagArticles)
 	return tagArticles
 }
 
@@ -343,7 +333,7 @@ func GetHotTags(count int) []string {
 		articleIds = append(articleIds, strconv.Itoa(int(topArticle.Id)))
 	}
 
-	rows, err := DB.Model(&models.Tags{}).Limit(count).Select("tag, count(*) as cnt").Where("article_id in (" + strings.Join(articleIds, ",") + ")").Order("cnt desc").Group("tag").Rows()
+	rows, err := DB.Model(&models.Tags{}).Limit(count).Select("tag, count(*) as cnt").Where("article_id in (?)", articleIds).Order("cnt desc").Group("tag").Rows()
 	if err != nil {
 		log.Println(err.Error())
 		return nil
@@ -384,18 +374,9 @@ func GetTopicArticleNum(id int32) int {
 		return 0
 	}
 
-	topicTags := strings.Split(topic.Skeywords, ",")
-	tagsSql := bytes.NewBufferString("")
-	for i, tag := range topicTags {
-		if i == 0 {
-			tagsSql.WriteString(`"` + tag + `"`)
-		} else {
-			tagsSql.WriteString(`,"` + tag + `"`)
-		}
-	}
-
 	var count int
-	DB.Model(&models.Tags{}).Select("article_id, count(*)").Where("tag in (" + tagsSql.String() + ")").Group("article_id").Count(&count)
+	topicTags := strings.Split(topic.Skeywords, ",")
+	DB.Model(&models.Tags{}).Select("article_id, count(*)").Where("tag in (?)", topicTags).Group("article_id").Count(&count)
 	return count
 }
 
@@ -430,6 +411,34 @@ func GetAdsense(title string) string {
 	}
 	DB.Where("title = ? AND status = 1", title).First(adsense)
 	return adsense.Content
+}
+
+func BatchGetLang(texts []string, langType string) []string {
+	var langs = make([]*models.Lang, 0)
+	DB.Where("zh in (?)", texts).Find(&langs)
+	if len(langs) == 0 {
+		return nil
+	}
+
+	langMap := make(map[string]string, len(langs))
+	switch langType {
+	case conf.KlangTypeHK, conf.KlangTypeTW:
+		for _, lang := range langs {
+			langMap[lang.Zh] = lang.Zht
+		}
+	case conf.KlangTypeEn:
+		for _, lang := range langs {
+			langMap[lang.Zh] = lang.Eng
+		}
+	default:
+		return texts
+	}
+
+	retLangs := make([]string, len(langs))
+	for i, text := range texts {
+		retLangs[i] = langMap[text]
+	}
+	return retLangs
 }
 
 func GetLang(text string, langType string) string {

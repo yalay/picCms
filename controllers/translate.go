@@ -8,9 +8,12 @@ import (
 	"net/url"
 	"strings"
 	"conf"
+	"regexp"
 )
 
 const apiKey = "trnsl.1.1.20170604T030854Z.e1cac9fc98790241.b0defc0c4b712d7bde91e5d2a7621534cfaf3b23"
+
+var wordExp, _  = regexp.Compile(`[^\pP\s]+`)
 
 // {"code":200,"lang":"zh-en","text":["The body bare min Ni Mily ribbon bundle creative fun kit figure"]}
 type rspMsg struct {
@@ -19,6 +22,14 @@ type rspMsg struct {
 	Text []string
 }
 
+// 支持长句子，可以包含各种标点
+func TranslateLongText(longText, langType string) string {
+	return wordExp.ReplaceAllStringFunc(longText, func(text string) string {
+		return Translate(text, langType)
+	})
+}
+
+// 只支持无标点符号或者只有","的语句
 func Translate(text, langType string) string {
 	if langType == conf.KlangTypeCn {
 		return text
@@ -33,15 +44,8 @@ func Translate(text, langType string) string {
 		if len(textFields) == 1 {
 			transText = GetLang(text, langType)
 		} else {
-			var engTexts = make([]string, 0, len(textFields))
-			for _, textField := range textFields {
-				engTextField := GetLang(textField, langType)
-				if engTextField == "" {
-					continue
-				}
-				engTexts = append(engTexts, engTextField)
-			}
-			transText =strings.Join(engTexts, ",")
+			transTexts := BatchGetLang(textFields, langType)
+			transText =strings.Join(transTexts, ",")
 		}
 		if transText == "" {
 			return text

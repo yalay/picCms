@@ -45,7 +45,7 @@ func (c *TopicController) Get() {
 		}
 		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
 		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
-		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
+		c.Data["webDesc"] = controllers.TranslateLongText(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = 90
@@ -55,8 +55,8 @@ func (c *TopicController) Get() {
 		c.Data["tTitle"] = controllers.Translate(topic.Stitle, curLang)
 		c.Data["tCover"] = topic.Cover
 		c.Data["tKeywords"] = controllers.Translate(topic.Skeywords, curLang)
-		c.Data["tDesc"] = controllers.Translate(topic.Sdescription, curLang)
-		c.Data["tContent"] = controllers.Translate(topic.Content, curLang)
+		c.Data["tDesc"] = controllers.TranslateLongText(topic.Sdescription, curLang)
+		c.Data["tContent"] = controllers.TranslateLongText(topic.Content, curLang)
 		c.Data["tArticles"] = controllers.GetTopicPageArticles(topic.Tid, pageId)
 		c.Data["pagination"] = page.Html()
 		c.Data["lang"] = curLang

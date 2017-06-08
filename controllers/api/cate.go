@@ -45,14 +45,14 @@ func (c *CateController) Get() {
 		}
 		c.Data["webName"] = controllers.Translate(controllers.GetGconfig("web_name"), curLang)
 		c.Data["webKeywords"] = controllers.Translate(controllers.GetGconfig("web_keywords"), curLang)
-		c.Data["webDesc"] = controllers.Translate(controllers.GetGconfig("web_description"), curLang)
+		c.Data["webDesc"] = controllers.TranslateLongText(controllers.GetGconfig("web_description"), curLang)
 		c.Data["tongji"] = controllers.GetGconfig("web_tongji")
 		c.Data["copyright"] = controllers.GetGconfig("web_copyright")
 		c.Data["cid"] = cate.Cid
 		c.Data["pageId"] = pageId
 		c.Data["cName"] = controllers.Translate(cate.Name, curLang)
 		c.Data["cKeywords"] = controllers.Translate(cate.Ckeywords, curLang)
-		c.Data["cDesc"] = controllers.Translate(cate.Cdescription, curLang)
+		c.Data["cDesc"] = controllers.TranslateLongText(cate.Cdescription, curLang)
 		c.Data["cArticles"] = controllers.GetCatePageArticles(cate.Cid, pageId)
 		c.Data["pagination"] = page.Html()
 		c.Data["lang"] = curLang
