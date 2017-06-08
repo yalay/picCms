@@ -434,7 +434,7 @@ func BatchGetLang(texts []string, langType string) []string {
 		return texts
 	}
 
-	retLangs := make([]string, len(langs))
+	retLangs := make([]string, len(texts))
 	for i, text := range texts {
 		retLangs[i] = langMap[text]
 	}
