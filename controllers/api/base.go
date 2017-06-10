@@ -4,6 +4,7 @@ import (
 	"conf"
 	"strings"
 	"time"
+	"strconv"
 )
 
 const (
@@ -43,4 +44,9 @@ func GetLang(headerLang string) string {
 			return conf.KlangTypeEn
 		}
 	}
+}
+
+func Atoi32(text string) int32 {
+	textInt, _ := strconv.Atoi(text)
+	return int32(textInt)
 }

@@ -54,6 +54,9 @@ func router(adminPath string) {
 	beego.Get(adminPath+"/*sub", controllers.AdminHandler)
 	beego.Post(adminPath+"/*sub", controllers.AdminHandler)
 
+	// 快捷工具
+	beego.Post("/tool/:type/:id", api.ToolHandler)
+
 	// 兼容旧文章页链接，采用301跳转，seo友好
 	beego.Get("/index.:suffix(php|html|htm)", func(c *context.Context) {
 		c.Redirect(http.StatusMovedPermanently, c.Input.Site())
