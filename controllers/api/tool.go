@@ -2,19 +2,20 @@ package api
 
 import (
 	"controllers"
-	"sync"
-	"log"
 	"strings"
+	"sync"
 	"time"
 
+	"fmt"
 	"github.com/astaxie/beego/context"
 )
 
 func ToolHandler(c *context.Context) {
 	toolType := c.Input.Param(":type")
+	id := c.Input.Param(":id")
 	switch toolType {
 	case "translate":
-		articleId := Atoi32(c.Input.Param(":id"))
+		articleId := Atoi32(id)
 		if articleId == 0 {
 			c.WriteString("no article id")
 			return
@@ -45,6 +46,8 @@ func ToolHandler(c *context.Context) {
 		oriTextFields := strings.Split(oriTexts, "#")
 		chtTextFields := strings.Split(chtTexts, "#")
 		engTextFields := strings.Split(engTexts, "#")
+
+		var result string
 		for i, oriTextField := range oriTextFields {
 			var chtTextField, engTextField string
 			if len(chtTextFields) > i {
@@ -53,11 +56,20 @@ func ToolHandler(c *context.Context) {
 			if len(engTextFields) > i {
 				engTextField = engTextFields[i]
 			}
-			//controllers.InsertLang(oriTextField, chtTextField, engTextField)
-			log.Println(oriTextField + "->" + chtTextField + ";" + engTextField)
+			result += fmt.Sprintf("text=%s&chtText=%s&engText=%s\n", oriTextField, chtTextField, engTextField)
 		}
-		c.WriteString("OK")
+		c.WriteString(result)
+	case "updatedb":
+		if id == "lang" {
+			text := c.Input.Query("text")
+			chtText := c.Input.Query("chtText")
+			engText := c.Input.Query("engText")
+			controllers.InsertLang(text, chtText, engText)
+			c.WriteString("OK")
+		} else {
+			c.WriteString("unsupport id:" + id)
+		}
 	default:
-		c.WriteString("unsupport type.")
+		c.WriteString("unsupport type:" + toolType)
 	}
 }
