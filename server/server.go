@@ -47,6 +47,7 @@ func router(adminPath string) {
 	beego.AddFuncMap("func_tagurl", conf.GetTagUrl)
 	beego.AddFuncMap("func_topicurl", conf.GetTopicUrl)
 	beego.AddFuncMap("func_lang", controllers.Translate)
+	beego.AddFuncMap("func_add", Add)
 
 	// 后台面板路由注册
 	beego.Get(adminPath, controllers.AdminHandler)
@@ -70,4 +71,12 @@ func router(adminPath string) {
 func Run(adminPath string) {
 	router(adminPath)
 	beego.Run()
+}
+
+func Add(args ...int) int {
+	var total int
+	for _, arg := range args {
+		total += arg
+	}
+	return total
 }

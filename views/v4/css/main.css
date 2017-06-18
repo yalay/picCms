@@ -234,7 +234,9 @@ footer{height:130px;background:#fff;border-top:1px solid #C5C5C5}
 ul.links li {width: auto;padding: 5px 8px}
 ul.links li a {color: #7D7D7D}
 .content_left video, .content_left iframe {margin: 5px auto;width:100%;height:auto}
-
+/*下载地址*/
+.d_list{float:left;overflow:hidden;background:#40b307;height:36px;border-radius:10px;position:relative;margin:20px 10px 10px;-webkit-box-shadow:0 0 10px transparent;-moz-box-shadow:0 0 10px transparent;box-shadow:0 0 10px transparent;-webkit-transition:all .35s;-moz-transition:all .35s;-ms-transition:all .35s;-o-transition:all .35s;transition:all .35s;cursor:pointer}
+.d_list a{text-align:center;line-height:36px;color:#ffffff;display:block}
 /* 头部登录后导航样式 */
 .header_inner {overflow:visible}
 .login_text {position:relative}

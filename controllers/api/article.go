@@ -7,6 +7,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"math/rand"
 
 	"github.com/astaxie/beego"
 )
@@ -89,6 +90,29 @@ func (c *ArticleController) Get() {
 		c.Data["relates"] = controllers.GetRelatedArticles(articleId , 9)
 		c.Data["tags"] = controllers.GetArticleTags(articleId)
 		c.Data["lang"] = curLang
+		c.Data["dls"] = func() []string {
+			downloads := controllers.GetDownloadLinks(articleId)
+			if len(downloads) == 0 {
+				return nil
+			}
+
+			stPrefixs := strings.Split(controllers.GetGconfig("shorten_prefix"), ",")
+			dls := make([]string, 0, len(downloads))
+			for _, dl := range downloads {
+				if dl.Status != 0 {
+					continue
+				}
+
+				if dl.Type == models.KdlTypeShortenPrefix {
+					if len(stPrefixs) != 0 {
+						dls = append(dls, stPrefixs[rand.Intn(len(stPrefixs))]+dl.Url)
+						continue
+					}
+				}
+				dls = append(dls, dl.Url)
+			}
+			return dls
+		}()
 		controllers.CACHE.Set(cacheKey, c.Data)
 	}
 	c.TplName = "article.tpl"

@@ -21,7 +21,7 @@
                         <i class="fa fa-comment"></i> <span><a href="#respond">{{func_lang "参与" .lang}}</a></span> {{func_lang "评论" .lang}}
                     </div>
                     <div class="post_au">
-                        <a style="margin-right:15px;color: #2CCBE6;" class="ajax ajax_dl_attachs" href="#"><i class="fa fa-download" style="margin-right:3px;"></i>{{func_lang "免费下载高清原图" .lang}}</a>
+                        {{if .dls}}<a style="margin-right:15px;color: #2CCBE6;" href="#download"><i class="fa fa-download" style="margin-right:3px;"></i>{{func_lang "免费下载高清原图" .lang}}</a>{{end}}
                     </div>
                 </div>
                 <div class="content" id="content">
@@ -32,22 +32,30 @@
                             <p><a href="{{.nextUrl}}"><img src="{{.file}}" alt="{{.title}}" title='{{func_lang "点击图片查看下一张" .lang}}'></a></p>
                             <div class="nav-links page_imges">{{if .pagination}}{{str2html .pagination}}{{end}}</div>
                         </div>
-
+                        <div id="download"></div>
                         <div class="tag cl" style="margin-top:30px;">
                             <span class="dtpost-like cl">
                                 <a class="favorite ajax_up" href="javascript:;">
                                     <i class="fa fa-thumbs-up"></i>
                                     <span class="count"><em class="ct_ding" style="color: #F58282;">{{.up}}</em>{{func_lang "个赞" .lang}}</span>
                                 </a>
-                                <a class="share-btn" href="javascript:;" onclick="javascript:userAddFavorite()" title='{{func_lang "收藏" .lang}}'>
+                                <a class="share-btn" href="javascript:" onclick="javascript:userAddFavorite()" title='{{func_lang "收藏" .lang}}'>
                                     <i class="fa fa-star"></i>
                                     <span class="count">{{func_lang "收藏" .lang}}</span>
                                 </a>
-                                <a class="share-down ajax_dl_attachs" href="#"><i class="fa fa-download"></i><span class="count">{{func_lang "下载" .lang}}</span></a>
                             </span>
                         </div>
                     </div>
                 </div>
+                {{if .dls}}
+                <div class="content_right_title">{{func_lang "下载地址" .lang}}：
+                </div>
+                <ul class="xg_content">
+                    {{range $index, $dl := .dls}}
+                    <li class="d_list list_n2"><a href="{{$dl}}"><i class="fa fa-download"></i> 下载地址{{func_add $index 1}}</a></li>
+                    {{end}}
+                </ul>
+                {{end}}
                 <div class="content_right_title">{{func_lang "相关资源" .lang}}：
                     <span class="single-tags">
                     {{range .tags}}

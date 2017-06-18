@@ -51,6 +51,7 @@ func InitDb() {
 		&models.Topic{},
 		&models.Ad{},
 		&models.Lang{},
+		&models.Download{},
 	)
 }
 
@@ -479,4 +480,13 @@ func InsertLang(text, chtText, engText string) {
 		// For below Update, nothing will be updated as "", 0, false are blank values of their types
 		DB.Model(&models.Lang{}).Where("zh = ?", text).Update(models.Lang{Zht: chtText, Eng: engText})
 	}
+}
+
+func GetDownloadLinks(articleId int32) []*models.Download {
+	var downloads = make([]*models.Download, 0)
+	DB.Where("article_id = ?", articleId).Find(&downloads)
+	if len(downloads) == 0 {
+		return nil
+	}
+	return downloads
 }
