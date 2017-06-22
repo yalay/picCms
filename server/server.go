@@ -11,6 +11,10 @@ import (
 	"github.com/astaxie/beego/context"
 )
 
+const (
+	VERSION = "v4"
+)
+
 func router(adminPath string) {
 	// 控制器注册
 	beego.Router("/", &api.HomeController{})
@@ -28,11 +32,11 @@ func router(adminPath string) {
 	beego.Router(`/topic-:engname([^-\s]+)-:page([0-9]+).html`, &api.TopicController{})
 	beego.Router("/social/:action/:id", &api.SocialController{})
 
-	beego.SetViewsPath("views/v4")
-	beego.SetStaticPath("/css", "views/v4/css")
-	beego.SetStaticPath("/js", "views/v4/js")
-	beego.SetStaticPath("/img", "views/v4/img")
-	beego.SetStaticPath("/favicon.ico", "views/v4/img/favicon.ico")
+	beego.SetViewsPath("views/" + VERSION)
+	beego.SetStaticPath("/css", "views/"+VERSION+"/css")
+	beego.SetStaticPath("/js", "views/"+VERSION+"/js")
+	beego.SetStaticPath("/img", "views/"+VERSION+"/img")
+	beego.SetStaticPath("/favicon.ico", "views/"+VERSION+"/img/favicon.ico")
 	beego.SetStaticPath("/robots.txt", "robots.txt")
 
 	beego.AddFuncMap("func_articles", controllers.GetArticles)
