@@ -52,7 +52,7 @@
                 </div>
                 <ul class="xg_content">
                     {{range $index, $dl := .dls}}
-                    <li class="d_list list_n2"><a href="{{$dl}}"><i class="fa fa-download"></i> 下载地址{{func_add $index 1}}</a></li>
+                    <li class="d_list list_n2"><a href="{{$dl}}" target="_blank"><i class="fa fa-download"></i> {{func_lang "下载地址" $.lang}} {{func_add $index 1}}</a></li>
                     {{end}}
                 </ul>
                 {{end}}
