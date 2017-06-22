@@ -25,6 +25,8 @@ func InitAdmin(adminPath string) {
 	Admin.AddResource(&models.Ad{}, &admin.Config{Menu: []string{"资源管理"}})
 	Admin.AddResource(&models.Lang{}, &admin.Config{Menu: []string{"资源管理"}})
 
+	Admin.AddResource(&models.Download{}, &admin.Config{Menu: []string{"下载管理"}})
+
 	AdminServer = Admin.NewServeMux(adminPath)
 }
 
