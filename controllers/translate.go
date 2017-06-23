@@ -35,25 +35,19 @@ func Translate(text, langType string) string {
 		return text
 	}
 
-	cacheKey := MakeCacheKey(KcachePrefixLang, text, langType)
-	if cacheData, err := CACHE.Get(cacheKey); err == nil {
-		return cacheData.(string)
-	}else {
-		var transText string
-		textFields := strings.Split(text, ",")
-		if len(textFields) == 1 {
-			transText = GetLang(text, langType)
-		} else {
-			transTexts := BatchGetLang(textFields, langType)
-			transText =strings.Join(transTexts, ",")
-		}
-		if transText == "" {
-			return text
-		}
-
-		CACHE.Set(cacheKey, transText)
-		return transText
+	var transText string
+	textFields := strings.Split(text, ",")
+	if len(textFields) == 1 {
+		transText = GetLang(text, langType)
+	} else {
+		transTexts := BatchGetLang(textFields, langType)
+		transText =strings.Join(transTexts, ",")
 	}
+	if transText == "" {
+		return text
+	}
+
+	return transText
 }
 
 // 转换到繁体

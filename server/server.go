@@ -40,8 +40,8 @@ func router(adminPath string) {
 	beego.SetStaticPath("/robots.txt", "robots.txt")
 
 	beego.AddFuncMap("func_articles", controllers.GetArticles)
-	beego.AddFuncMap("func_cates", controllers.GetCates)
-	beego.AddFuncMap("func_topics", controllers.GetTopics)
+	beego.AddFuncMap("func_cates", controllers.GetAllCates)
+	beego.AddFuncMap("func_topics", controllers.GetAllTopics)
 	beego.AddFuncMap("func_hottags", controllers.GetHotTags)
 	beego.AddFuncMap("func_adsense", controllers.GetAdsense)
 	beego.AddFuncMap("func_time", api.TimeFormat)
