@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	VERSION = "v4"
+	kAdminPath = "/admin"
+	VERSION    = "v4"
 )
 
 func router(adminPath string) {
@@ -58,6 +59,9 @@ func router(adminPath string) {
 	beego.Post(adminPath, controllers.AdminHandler)
 	beego.Get(adminPath+"/*sub", controllers.AdminHandler)
 	beego.Post(adminPath+"/*sub", controllers.AdminHandler)
+	beego.Get("/403", func(c *context.Context) {
+		c.Output.SetStatus(http.StatusForbidden)
+	})
 
 	// 快捷工具
 	beego.Post("/tool/:type/:id", api.ToolHandler)
@@ -72,8 +76,9 @@ func router(adminPath string) {
 	})
 }
 
-func Run(adminPath string) {
-	router(adminPath)
+func Run() {
+	controllers.InitAdmin(kAdminPath)
+	router(kAdminPath)
 	beego.Run()
 }
 
